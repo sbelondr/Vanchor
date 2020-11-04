@@ -3,7 +3,7 @@
   <h3>Notes</h3>
   <div class="addNote">
     <b-row>
-      <b-col sm="5">
+      <b-col sm="4">
         <b-form-input type="text" v-model="title" placeholder="Title note"></b-form-input>
       </b-col>
       <b-col sm="4">
@@ -14,12 +14,34 @@
   <div>
     <ul>
       <li v-for="note in allNotes" :key="note.id" :class="{ note }">
-        <h3 @click="editNote(note)">
-          {{ note.title }}
-        </h3>
+        <div>
+          <tr>
+            <th>
+              <h3 @click="editNote(note)">
+                {{ note.title }}
+              </h3>
+            </th>
+
+            <th>
+              <div>
+                <!-- <b-button v-b-modal.modal-1 variant="outline-primary">Edit title</b-button> -->
+              </div>
+            </th>
+            
+            <th>
+              <b-button variant="outline-danger" @click="deleteNote(note)">Delete note</b-button>
+            </th>
+          </tr>
+        </div>
       </li>
     </ul>
   </div>
+
+  <b-modal id="modal-1" title="Edit title">
+    <b-input-group>
+      <b-form-input type="text" min="0.00" v-model="titleNoteEdit"></b-form-input>
+    </b-input-group>
+  </b-modal>
 </div>
 </template>
 
@@ -36,6 +58,7 @@ export default {
   setup() {
     const title = ref("");
     const allNotes = ref([]);
+    const titleNoteEdit = ref("");
 
     function launchStackEdit(note, isNew) {
       const stackedit = new Stackedit();
@@ -65,6 +88,7 @@ export default {
         } else {
           const axios = require("axios").default;
           axios.post("http://localhost:3000/note/" + note.id, {
+            id: note.id,
             title: note.title,
             content: note.content,
           });
@@ -90,6 +114,12 @@ export default {
       launchStackEdit(note, true);
     }
 
+    function deleteNote(note) {
+      const axios = require("axios").default;
+      axios.delete("http://localhost:3000/note/" + note.title);
+      allNotes.value = allNotes.value.filter((n) => n.title != note.title);
+    }
+
     onMounted(() => {
       const axios = require("axios").default;
       axios
@@ -111,9 +141,11 @@ export default {
 
     return {
       title,
+      titleNoteEdit,
       allNotes,
       addNote,
       editNote,
+      deleteNote
     };
   },
 };
