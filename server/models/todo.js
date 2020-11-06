@@ -7,14 +7,14 @@ const url = process.env.MONGO_URL;
 // Database Name
 const dbName = process.env.MONGO_DB_NAME;
 // collection
-const collectionName = 'note'
+const collectionName = 'todo'
 
 
 /*
-** get note(s)
+** get todo(s)
 */
 
-getNote = (res) => {
+getTodo = (res) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
 
     // get user collection
@@ -23,15 +23,17 @@ getNote = (res) => {
     // List all the available databases
     col.find({}).toArray(function (err, items) {
       assert.strictEqual(null, err);
-      assert.ok(items.length > 0);
-      
-      res.status(200).send(items);
+      if (items.length <= 0) {
+          res.status(200).send("0");
+      } else {
+          res.status(200).send(items);
+      }
       client.close();
     });
   });
 }
 
-getNoteFilter = (res, columnFilter) => {
+getTodoFilter = (res, columnFilter) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     
     // get user collection
@@ -49,44 +51,44 @@ getNoteFilter = (res, columnFilter) => {
 }
 
 /*
-** insert note
+** insert todo
 */
 
-const insertDocuments = function (db, title, content, callback) {
+const insertDocuments = function (db, title, isCheck, callback) {
   // Get the documents collection
   const collection = db.collection(collectionName);
   // Insert some documents
   collection.insertMany([
-    { title: title, content: content }
+    { title: title, check: isCheck }
   ], function (err, result) {
     assert.strictEqual(err, null);
     callback(result);
   });
 }
 
-insertNote = (title, content) => {
+insertTodo = (title, isCheck) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     
     const db = client.db(dbName);
 
-    insertDocuments(db, title, content, function () {
+    insertDocuments(db, title, isCheck, function () {
       client.close();
     });
   });
 }
 
 /*
-** update note
+** update todo
 */
 
 // ? filter by _id not work
 
-const updateDocumentContent = function (db, pTitle, pContent, callback) {
+const updateDocumentIsCheck = function (db, pTitle, pCheck, callback) {
   const collection = db.collection(collectionName);
   
   collection.updateOne({ title : pTitle }
-    , { $set: { content: pContent } }, function(err, result) {
+    , { $set: { check: pCheck } }, function(err, result) {
     assert.strictEqual(err, null);
     callback(result);
   });
@@ -102,18 +104,18 @@ const updateDocumentTitle = function (db, pTitle, callback) {
   });
 }
 
-updateNote = (pTitle, pContent) => {
+updateTodo = (pTitle, pCheck) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     const db = client.db(dbName);
     
-    updateDocumentContent(db, pTitle, pContent, function () {
+    updateDocumentIsCheck(db, pTitle, pCheck, function () {
       client.close();
     });
   });
 }
 
-updateNoteTitle = (pTitle) => {
+updateTodoTitle = (pTitle) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     const db = client.db(dbName);
@@ -126,20 +128,20 @@ updateNoteTitle = (pTitle) => {
 
 
 /*
-** delete note
+** delete todo
 */
 
 const removeDocument = function(db, pTitle, callback) {
   // Get the documents collection
   const collection = db.collection(collectionName);
-  // Delete document where a is 3
+  // Delete document
   collection.deleteOne({ title: pTitle }, function(err, result) {
     assert.strictEqual(err, null);
     callback(result);
   });
 }
 
-deleteNote = (pTitle) => {
+deleteTodo = (pTitle) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     const db = client.db(dbName);
@@ -151,12 +153,12 @@ deleteNote = (pTitle) => {
 }
 
 
-exports.getNote = getNote;
-exports.getNoteFilter = getNoteFilter;
+exports.getTodo = getTodo;
+exports.getTodoFilter = getTodoFilter;
 
-exports.insertNote = insertNote;
+exports.insertTodo = insertTodo;
 
-exports.updateNote = updateNote;
-exports.updateNoteTitle = updateNoteTitle;
+exports.updateTodo = updateTodo;
+exports.updateTodoTitle = updateTodoTitle;
 
-exports.deleteNote = deleteNote;
+exports.deleteTodo = deleteTodo;

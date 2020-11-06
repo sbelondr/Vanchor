@@ -3,13 +3,19 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 const app = express();
 
-const { getUser } = require('./models/user');
 const {
   getNote,
   insertNote,
   updateNote,
   deleteNote
 } = require('./models/note');
+
+const {
+  getTodo,
+  insertTodo,
+  updateTodo,
+  deleteTodo
+} = require('./models/todo');
 
 require('dotenv').config();
 
@@ -22,9 +28,7 @@ app
   .get('/', (req, res) => {
     res.send('Hello')
   })
-  .get('/user', (req, res) => {
-    getUser(res)
-  })
+  // note
   .get('/note', (req, res) => {
     getNote(res)
   })
@@ -33,14 +37,30 @@ app
     res.sendStatus(200);
   })
   .post('/note/:id', (req, res) => {
-    // console.log(req.body.id + " " + req.body.title + " " + req.body.content);
     updateNote(req.body.title, req.body.content);
     res.sendStatus(200);
   })
   .delete('/note/:id', (req, res) => {
     deleteNote(req.params.id);
     res.sendStatus(200);
-  });
+  })
+  // todo
+  .get('/todo', (req, res) => {
+    getTodo(res)
+  })
+  .post('/todo', (req, res) => {
+    insertTodo(req.body.title, req.body.check);
+    res.sendStatus(200);
+  })
+  .post('/todo/:id', (req, res) => {
+    updateTodo(req.body.title, req.body.check);
+    res.sendStatus(200);
+  })
+  .delete('/todo/:id', (req, res) => {
+    deleteTodo(req.params.id);
+    res.sendStatus(200);
+  })
+  ;
 
 const server = app.listen(process.env.PORT ?? 3000, () => {
   console.log('App listening on port %d!', process.env.PORT ?? 3000);

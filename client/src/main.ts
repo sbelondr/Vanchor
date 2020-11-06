@@ -6,8 +6,9 @@ import VueCompositionAPI from '@vue/composition-api';
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 
-// Install BootstrapVue
+// use composition API (Vue3)
 Vue.use(VueCompositionAPI);
+// Install BootstrapVue
 Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);

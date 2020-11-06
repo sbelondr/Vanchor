@@ -1,53 +1,63 @@
 <template>
-<div class="Todo">
-  <h3>To Do</h3>
-  <form @submit.prevent="addNewTodo">
-    <b-row class="my-1">
-      <b-col sm="3">
-        <label>New Todo:</label>
-      </b-col>
-      <b-col sm="3">
-        <b-form-input type="text" v-model="newTodo" name="newTodo"></b-form-input>
-      </b-col>
-      <b-col sm="2">
-        <b-button variant="outline-primary" @click="addNewTodo">Add new Todo</b-button>
-      </b-col>
-    </b-row>
-  </form>
-
-  <b-row class="my-1">
-    <b-col sm="4">
-      <b-button variant="success" @click="markAllDone">Mark all done</b-button>
-    </b-col>
-    <b-col sm="4">
-      <b-button variant="danger" @click="removeAllDone">Remove all done</b-button>
-    </b-col>
-    <b-col sm="4">
-      <b-button variant="danger" @click="removeAll">Remove all</b-button>
-    </b-col>
-  </b-row>
-
-  <ul>
-    <li v-for="(todo, index) in todos" :key="todo.id" :class="{ todo }">
-      <b-row>
-        <b-col sm="4">
-          <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
-            {{ todo.content }}
-          </h5>
+  <div class="Todo">
+    <h3>To Do</h3>
+    <form @submit.prevent="addNewTodo">
+      <b-row class="my-1">
+        <b-col sm="3">
+          <label>New Todo:</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-input
+            type="text"
+            v-model="newTodo"
+            name="newTodo"
+          ></b-form-input>
         </b-col>
         <b-col sm="2">
-          <b-button variant="danger" @click="removeTodo(index)">Remove</b-button>
+          <b-button variant="outline-primary" @click="addNewTodo"
+            >Add new Todo</b-button
+          >
         </b-col>
       </b-row>
-    </li>
-  </ul>
-</div>
+    </form>
+
+    <b-row class="my-1">
+      <b-col sm="4">
+        <b-button variant="success" @click="markAllDone"
+          >Mark all done</b-button
+        >
+      </b-col>
+      <b-col sm="4">
+        <b-button variant="danger" @click="removeAllDone"
+          >Remove all done</b-button
+        >
+      </b-col>
+      <b-col sm="4">
+        <b-button variant="danger" @click="removeAll">Remove all</b-button>
+      </b-col>
+    </b-row>
+
+    <ul>
+      <li v-for="(todo, index) in todos" :key="todo.id" :class="{ todo }">
+        <b-row>
+          <b-col sm="4">
+            <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
+              {{ todo.title }}
+            </h5>
+          </b-col>
+          <b-col sm="2">
+            <b-button variant="danger" @click="removeTodo(index)"
+              >Remove</b-button
+            >
+          </b-col>
+        </b-row>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
-import {
-  ref
-} from "@vue/composition-api";
+import { ref, onMounted } from "@vue/composition-api";
 
 export default {
   name: "Todo",
@@ -55,13 +65,36 @@ export default {
     const newTodo = ref("");
     const todos = ref([]);
 
+    const axios = require("axios").default;
+
     function sortList() {
       todos.value.sort((a, b) => a.done && !b.done);
     }
 
+    function startTodo() {
+      axios
+        .get("http://localhost:3000/todo", {
+          headers: { "Access-Control-Allow-Origin": "*" },
+        })
+        .then((res) => {
+          if (res.data != "0") {
+            for (const todo of res.data) {
+              todos.value.push({
+                id: todo._id,
+                title: todo.title,
+                done: todo.check,
+              });
+            }
+          }
+        })
+        .then(() => {
+          sortList();
+        });
+    }
+
     function searchDoublon(value) {
       for (const todo of todos.value) {
-        if (todo.content == value) {
+        if (todo.title == value) {
           return false;
         }
       }
@@ -74,33 +107,79 @@ export default {
         todos.value.push({
           id: Date.now(),
           done: false,
-          content: newTodo.value,
+          title: newTodo.value,
         });
-        newTodo.value = "";
+        axios.post("http://localhost:3000/todo", {
+          title: newTodo.value,
+          check: 0,
+        });
         sortList();
+        newTodo.value = "";
       }
     }
 
     function toggleDone(todo) {
+      axios.post("http://localhost:3000/todo/" + todo.title, {
+        title: todo.title,
+        check: todo.done ? 0 : 1,
+      });
       todo.done = !todo.done;
       sortList();
     }
 
     function markAllDone() {
-      todos.value.forEach((todo) => (todo.done = true));
+      todos.value.forEach((todo) => {
+        axios.post("http://localhost:3000/todo/" + todo.title, {
+          title: todo.title,
+          check: 1,
+        });
+        todo.done = true;
+      });
     }
 
     function removeAll() {
-      todos.value = [];
+      this.$bvModal
+        .msgBoxConfirm("Are you sure?")
+        .then((value) => {
+          if (value) {
+            for (const todo of todos.value) {
+              axios.delete("http://localhost:3000/todo/" + todo.title);
+            }
+            todos.value = [];
+          }
+        })
+        .catch((err) => {
+          // An error occurred
+        });
     }
 
     function removeAllDone() {
-      todos.value = todos.value.filter((todo) => todo.done == false);
+      this.$bvModal
+        .msgBoxConfirm("Are you sure?")
+        .then((value) => {
+          if (value) {
+            todos.value = todos.value.filter((todo) => {
+              if (todo.done == true) {
+                axios.delete("http://localhost:3000/todo/" + todo.title);
+              }
+              return todo.done == false;
+            });
+          }
+        })
+        .catch((err) => {
+          // An error occurred
+        });
     }
 
     function removeTodo(index) {
+      axios.delete("http://localhost:3000/todo/" + todos.value[index].title);
       todos.value.splice(index, 1);
     }
+
+    onMounted(() => {
+      startTodo();
+      // sortList();
+    });
 
     return {
       todos,

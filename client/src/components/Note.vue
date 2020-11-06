@@ -1,48 +1,58 @@
 <template>
-<div class="Note">
-  <h3>Notes</h3>
-  <div class="addNote">
-    <b-row>
-      <b-col sm="4">
-        <b-form-input type="text" v-model="title" placeholder="Title note"></b-form-input>
-      </b-col>
-      <b-col sm="4">
-        <b-button @click="addNote">Launch Stackedit</b-button>
-      </b-col>
-    </b-row>
-  </div>
-  <div>
-    <ul>
-      <li v-for="note in allNotes" :key="note.id" :class="{ note }">
-        <div>
-          <tr>
-            <th>
-              <h3 @click="editNote(note)">
-                {{ note.title }}
-              </h3>
-            </th>
+  <div class="Note">
+    <h3>Notes</h3>
+    <div class="addNote">
+      <b-row>
+        <b-col sm="4">
+          <b-form-input
+            type="text"
+            v-model="title"
+            placeholder="Title note"
+          ></b-form-input>
+        </b-col>
+        <b-col sm="4">
+          <b-button @click="addNote">Launch Stackedit</b-button>
+        </b-col>
+      </b-row>
+    </div>
+    <div>
+      <ul>
+        <li v-for="note in allNotes" :key="note.id" :class="{ note }">
+          <div>
+            <tr>
+              <th>
+                <h3 @click="editNote(note)">
+                  {{ note.title }}
+                </h3>
+              </th>
 
-            <th>
-              <div>
-                <!-- <b-button v-b-modal.modal-1 variant="outline-primary">Edit title</b-button> -->
-              </div>
-            </th>
-            
-            <th>
-              <b-button variant="outline-danger" @click="deleteNote(note)">Delete note</b-button>
-            </th>
-          </tr>
-        </div>
-      </li>
-    </ul>
-  </div>
+              <th>
+                <div>
+                  <!-- <b-button v-b-modal.modal-1 variant="outline-primary">Edit title</b-button> -->
+                </div>
+              </th>
 
-  <b-modal id="modal-1" title="Edit title">
-    <b-input-group>
-      <b-form-input type="text" min="0.00" v-model="titleNoteEdit"></b-form-input>
-    </b-input-group>
-  </b-modal>
-</div>
+              <th>
+                <b-button variant="outline-danger" @click="deleteNote(note)"
+                  >Delete note</b-button
+                >
+              </th>
+            </tr>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <b-modal id="modal-1" title="Edit title">
+      <b-input-group>
+        <b-form-input
+          type="text"
+          min="0.00"
+          v-model="titleNoteEdit"
+        ></b-form-input>
+      </b-input-group>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -112,12 +122,24 @@ export default {
         content: "",
       };
       launchStackEdit(note, true);
+      title.value = "";
     }
 
     function deleteNote(note) {
-      const axios = require("axios").default;
-      axios.delete("http://localhost:3000/note/" + note.title);
-      allNotes.value = allNotes.value.filter((n) => n.title != note.title);
+      this.$bvModal
+        .msgBoxConfirm("Are you sure?")
+        .then((value) => {
+          if (value) {
+            const axios = require("axios").default;
+            axios.delete("http://localhost:3000/note/" + note.title);
+            allNotes.value = allNotes.value.filter(
+              (n) => n.title != note.title
+            );
+          }
+        })
+        .catch((err) => {
+          // An error occurred
+        });
     }
 
     onMounted(() => {
@@ -145,7 +167,7 @@ export default {
       allNotes,
       addNote,
       editNote,
-      deleteNote
+      deleteNote,
     };
   },
 };
