@@ -138,7 +138,7 @@ export default {
           }
         })
         .catch((err) => {
-          // An error occurred
+          console.error(err);
         });
     }
 

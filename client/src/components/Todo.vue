@@ -149,7 +149,7 @@ export default {
           }
         })
         .catch((err) => {
-          // An error occurred
+          console.error(err);
         });
     }
 
@@ -167,7 +167,7 @@ export default {
           }
         })
         .catch((err) => {
-          // An error occurred
+          console.error(err);
         });
     }
 
