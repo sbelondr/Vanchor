@@ -43,21 +43,42 @@
       <h4>Settings timer</h4>
       <div class="input-pomodoro" v-if="selected == 'pomodoro'">
         <h5>Work time</h5>
-        <SettingTimer key="pomodoro-work" @update="timerUpdate" :lastValue="data.pomodoro[0].toString()" />
+        <SettingTimer
+          key="pomodoro-work"
+          @update="timerUpdate"
+          :lastValue="data.pomodoro[0].toString()"
+        />
         <h5>Break time</h5>
-        <SettingTimer key="pomodoro-break" @update="pomodoroUpdate" :lastValue="data.pomodoro[1].toString()" />
+        <SettingTimer
+          key="pomodoro-break"
+          @update="pomodoroUpdate"
+          :lastValue="data.pomodoro[1].toString()"
+        />
       </div>
       <div class="input-time" v-else>
-        <SettingTimer key="timer" @update="timerUpdate" :lastValue="data.timer.toString()" />
+        <SettingTimer
+          key="timer"
+          @update="timerUpdate"
+          :lastValue="data.timer.toString()"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { reactive, ref, onMounted } from "@vue/composition-api";
+import {
+  reactive,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+} from "@vue/composition-api";
+
+import { getTimer, updateTimer } from "@/models/Timer";
+
 import Notif from "@/functions/notification";
 
+// ! bug stopwatch when it's default
 export default {
   components: {
     SettingTimer: () => import("@/components/SettingTimer"),
@@ -73,16 +94,33 @@ export default {
       nameBtnSuccess: "Play",
       statInterval: null,
       isPlay: false,
-      timer: 120,
+      timer: 0,
       pomodoro: [1500, 120, true],
     });
 
+    /**
+     * edit format pomodoro to stock in the database
+     * very bad (like my english)
+     * @param a work time
+     * @param b break time
+     */
+    function getPomodoroFormat(a, b) {
+      return a.toString() + ":" + b.toString();
+    }
+
+    /**
+     * edit display when timer is over
+     */
     function clearTimer() {
       data.isPlay = false;
       data.nameBtnSuccess = "Play";
       clearInterval(data.statInterval);
     }
 
+    /**
+     * display format timer, check it's over and display notif
+     * @param value time value (in sec)
+     */
     function calcFormat(value) {
       let hours = 0;
       let min = 0;
@@ -109,6 +147,10 @@ export default {
       data.sec = sec < 10 ? "0" + sec.toString() : sec.toString();
     }
 
+    /**
+     * edit display when use click in radio button
+     * @param name name of radio button (user choice)
+     */
     function clickRadioButton(name) {
       clearTimer();
       if (name == "stopwatch") {
@@ -148,6 +190,10 @@ export default {
       clickRadioButton(selected.value);
     }
 
+    /**
+     * update time by component SettingTimer
+     * @param value new data
+     */
     function timerUpdate(value) {
       if (selected.value == "pomodoro") {
         data.pomodoro[0] = value;
@@ -157,14 +203,56 @@ export default {
       clickRadioButton(selected.value);
     }
 
+    /**
+     * update pomodoro break time by component SettingTimer
+     * @param value new data
+     */
     function pomodoroUpdate(value) {
       data.pomodoro[1] = value;
       clickRadioButton(selected.value);
     }
 
-    onMounted(() => {
+    /**
+     * get data stock in the database
+     */
+    const fetchData = async () => {
+      const time = await getTimer();
+
+      return new Promise(() => {
+        const pomSplit = time.pomodoro.split(":");
+        data.pomodoro[0] = parseInt(pomSplit[0], 10);
+        data.pomodoro[1] = parseInt(pomSplit[1], 10);
+        data.timer = time.timer;
+        selected.value = time.mode;
+        // console.log(time);
+        // console.groupCollapsed('fetchData');
+        // console.log(data.pomodoro);
+        // console.log(data.timer);
+        // console.log(selected.value);
+        // console.groupEnd();
+      });
+    };
+
+    onMounted(async () => {
+      await fetchData();
       Notif.getPermissionNotif();
       clickRadioButton(selected.value);
+    });
+
+    /**
+     * save data
+     */
+    onBeforeUnmount(() => {
+      // console.groupCollapsed('onUnmounted');
+      // console.log(data.pomodoro);
+      // console.log(data.timer);
+      // console.log(selected.value);
+      // console.groupEnd();
+      updateTimer(
+        selected.value,
+        getPomodoroFormat(data.pomodoro[0], data.pomodoro[1]),
+        data.timer
+      );
     });
 
     return {
@@ -206,5 +294,4 @@ export default {
 .input-pomodoro h5 {
   margin-top: 2%;
 }
-
 </style>

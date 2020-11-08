@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="90" height="338" view_box="0 0 90 338"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Sun, 08 Nov 2020 13:31:43</desc>
+
+<rect id="frame" x="0" y="0" width="90" height="338" fill="#ffffff" stroke="none" stroke-width="0"/>
+
+<!-- Entity note -->
+<g id="entity-note">
+	<g id="frame-note">
+		<rect x="17" y="245" width="56" height="25" fill="#bababa" stroke="#bababa" stroke-width="0"/>
+		<rect x="17" y="270.0" width="56" height="59" fill="#e0e0e0" stroke="#e0e0e0" stroke-width="0"/>
+		<rect x="17" y="245" width="56" height="84" fill="none" stroke="#878787" stroke-width="2"/>
+		<line x1="17" y1="270" x2="73" y2="270" stroke="#878787" stroke-width="1"/>
+	</g>
+	<text x="31" y="262.7" fill="#000000" font-family="Verdana" font-size="12">note</text>
+	<text x="22" y="287.8" fill="#000000" font-family="Verdana" font-size="12">id</text>
+	<text x="22" y="304.8" fill="#000000" font-family="Verdana" font-size="12">title</text>
+	<text x="22" y="321.8" fill="#000000" font-family="Verdana" font-size="12">content</text>
+</g>
+
+<!-- Entity todo -->
+<g id="entity-todo">
+	<g id="frame-todo">
+		<rect x="22" y="9" width="46" height="25" fill="#bababa" stroke="#bababa" stroke-width="0"/>
+		<rect x="22" y="34.0" width="46" height="59" fill="#e0e0e0" stroke="#e0e0e0" stroke-width="0"/>
+		<rect x="22" y="9" width="46" height="84" fill="none" stroke="#878787" stroke-width="2"/>
+		<line x1="22" y1="34" x2="68" y2="34" stroke="#878787" stroke-width="1"/>
+	</g>
+	<text x="31" y="26.7" fill="#000000" font-family="Verdana" font-size="12">todo</text>
+	<text x="27" y="51.8" fill="#000000" font-family="Verdana" font-size="12">id</text>
+	<text x="27" y="68.8" fill="#000000" font-family="Verdana" font-size="12">title</text>
+	<text x="27" y="85.8" fill="#000000" font-family="Verdana" font-size="12">check</text>
+</g>
+
+<!-- Entity timer -->
+<g id="entity-timer">
+	<g id="frame-timer">
+		<rect x="9" y="118" width="72" height="25" fill="#bababa" stroke="#bababa" stroke-width="0"/>
+		<rect x="9" y="143.0" width="72" height="77" fill="#e0e0e0" stroke="#e0e0e0" stroke-width="0"/>
+		<rect x="9" y="118" width="72" height="102" fill="none" stroke="#878787" stroke-width="2"/>
+		<line x1="9" y1="143" x2="81" y2="143" stroke="#878787" stroke-width="1"/>
+	</g>
+	<text x="28" y="135.7" fill="#000000" font-family="Verdana" font-size="12">timer</text>
+	<text x="14" y="160.7" fill="#000000" font-family="Verdana" font-size="12">id</text>
+	<text x="14" y="177.8" fill="#000000" font-family="Verdana" font-size="12">mode</text>
+	<text x="14" y="194.8" fill="#000000" font-family="Verdana" font-size="12">pomodoro</text>
+	<text x="14" y="211.8" fill="#000000" font-family="Verdana" font-size="12">timer</text>
+</g>
+</svg>

@@ -2,7 +2,9 @@ const exports = {}
 
 exports.getPermissionNotif = () => {
   Notification.requestPermission().then(function (result) {
-    console.log(result);
+    if (result !== 'granted') {
+      console.warn(result);
+    }
   });
 }
 

@@ -17,6 +17,11 @@ const {
   deleteTodo
 } = require('./models/todo');
 
+const {
+  getTimer,
+  updateTimer
+} = require('./models/timer');
+
 require('dotenv').config();
 
 app.use(bodyParser.json());
@@ -58,6 +63,14 @@ app
   })
   .delete('/todo/:id', (req, res) => {
     deleteTodo(req.params.id);
+    res.sendStatus(200);
+  })
+  // timer
+  .get('/timer', (req, res) => {
+    getTimer(res);
+  })
+  .post('/timer', (req, res) => {
+    updateTimer(req.body.mode, req.body.pomodoro, req.body.timer);
     res.sendStatus(200);
   })
   ;
