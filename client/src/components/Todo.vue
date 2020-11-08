@@ -21,7 +21,7 @@
 
     <ul class="display-todo">
       <b-list-group class="w-50 ml-2 mr-5 mt-3 navig-todo">
-        <li v-for="(todo, index) in todos" :key="todo.id" :class="{ todo }">
+        <li v-for="(todo, index) in allTodo" :key="todo.id" :class="{ todo }">
           <b-list-group-item>
             <b-row>
               <b-col sm="10" class="text-left">
@@ -61,41 +61,25 @@
 <script>
 import { ref, onMounted } from "@vue/composition-api";
 
+import { getTodo, addTodo, editTodo, deleteTodo } from "@/models/Todo";
+
 export default {
   name: "Todo",
   setup() {
     const newTodo = ref("");
-    const todos = ref([]);
-
-    const axios = require("axios").default;
+    const allTodo = ref([]);
 
     function sortList() {
-      todos.value.sort((a, b) => a.done && !b.done);
+      allTodo.value.sort((a, b) => a.done && !b.done);
     }
 
     function startTodo() {
-      axios
-        .get("http://localhost:3000/todo", {
-          headers: { "Access-Control-Allow-Origin": "*" },
-        })
-        .then((res) => {
-          if (res.data != "0") {
-            for (const todo of res.data) {
-              todos.value.push({
-                id: todo._id,
-                title: todo.title,
-                done: todo.check,
-              });
-            }
-          }
-        })
-        .then(() => {
-          sortList();
-        });
+      allTodo.value = getTodo();
+      sortList();
     }
 
     function searchDoublon(value) {
-      for (const todo of todos.value) {
+      for (const todo of allTodo.value) {
         if (todo.title == value) {
           return false;
         }
@@ -106,35 +90,26 @@ export default {
     function addNewTodo() {
       const size = newTodo.value.length;
       if (size > 0 && size < 51 && searchDoublon(newTodo.value)) {
-        todos.value.push({
+        allTodo.value.push({
           id: Date.now(),
           done: false,
           title: newTodo.value,
         });
-        axios.post("http://localhost:3000/todo", {
-          title: newTodo.value,
-          check: 0,
-        });
+        addTodo(newTodo.value);
         sortList();
         newTodo.value = "";
       }
     }
 
     function toggleDone(todo) {
-      axios.post("http://localhost:3000/todo/" + todo.title, {
-        title: todo.title,
-        check: todo.done ? 0 : 1,
-      });
+      editTodo(todo.title, todo.done ? 0 : 1);
       todo.done = !todo.done;
       sortList();
     }
 
     function markAllDone() {
-      todos.value.forEach((todo) => {
-        axios.post("http://localhost:3000/todo/" + todo.title, {
-          title: todo.title,
-          check: 1,
-        });
+      allTodo.value.forEach((todo) => {
+        editTodo(todo.title, 1);
         todo.done = true;
       });
     }
@@ -144,10 +119,10 @@ export default {
         .msgBoxConfirm("Are you sure?")
         .then((value) => {
           if (value) {
-            for (const todo of todos.value) {
-              axios.delete("http://localhost:3000/todo/" + todo.title);
+            for (const todo of allTodo.value) {
+              deleteTodo(todo.title);
             }
-            todos.value = [];
+            allTodo.value = [];
           }
         })
         .catch((err) => {
@@ -160,9 +135,9 @@ export default {
         .msgBoxConfirm("Are you sure?")
         .then((value) => {
           if (value) {
-            todos.value = todos.value.filter((todo) => {
+            allTodo.value = allTodo.value.filter((todo) => {
               if (todo.done == true) {
-                axios.delete("http://localhost:3000/todo/" + todo.title);
+                deleteTodo(todo.title);
               }
               return todo.done == false;
             });
@@ -174,17 +149,16 @@ export default {
     }
 
     function removeTodo(index) {
-      axios.delete("http://localhost:3000/todo/" + todos.value[index].title);
-      todos.value.splice(index, 1);
+      deleteTodo(allTodo.value[index].title);
+      allTodo.value.splice(index, 1);
     }
 
     onMounted(() => {
       startTodo();
-      // sortList();
     });
 
     return {
-      todos,
+      allTodo,
       newTodo,
       addNewTodo,
       markAllDone,
@@ -219,5 +193,4 @@ ul {
 .display-todo {
   display: ruby;
 }
-
 </style>

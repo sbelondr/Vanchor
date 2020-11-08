@@ -6,7 +6,7 @@ export interface INote {
   content: string;
 }
 
-function addNote(title: string, content: string) {
+export function addNote(title: string, content: string) {
   const axios = require("axios").default;
   axios.post("http://localhost:3000/note", {
     title: title,
@@ -48,5 +48,3 @@ export function getNote() {
     });
     return allNotes;
 };
-
-export { addNote };

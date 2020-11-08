@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
-import TemplateArticle from '../components/cArticle.vue';
 import Login from '../components/Admin/cLogin.vue';
 
 Vue.use(VueRouter)
@@ -28,11 +27,11 @@ const routes: Array<RouteConfig> = [
     // which is lazy-loaded when the route is visited.
     component: Login
   },
-  {
-    path: '/article/:id',
-    name: 'Article',
-    component: TemplateArticle
-  }
+  // {
+  //   path: '/article/:id',
+  //   name: 'Article',
+  //   component: TemplateArticle
+  // }
 ]
 
 const router = new VueRouter({
