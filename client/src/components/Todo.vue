@@ -1,27 +1,46 @@
 <template>
   <div class="Todo">
     <h3>To Do</h3>
-    <form @submit.prevent="addNewTodo">
-      <b-row class="my-1">
-        <b-col sm="3">
-          <label>New Todo:</label>
-        </b-col>
-        <b-col sm="3">
+    <form class="mt-3" @submit.prevent="addNewTodo">
+      <b-row class="ml-5">
+        <b-col sm="3" class="text-left">
           <b-form-input
             type="text"
             v-model="newTodo"
             name="newTodo"
+            placeholder="New todo"
           ></b-form-input>
         </b-col>
-        <b-col sm="2">
+        <b-col sm="2" class="text-left">
           <b-button variant="outline-primary" @click="addNewTodo"
-            >Add new Todo</b-button
+            >Add new todo</b-button
           >
         </b-col>
       </b-row>
     </form>
 
-    <b-row class="my-1">
+    <ul class="display-todo">
+      <b-list-group class="w-50 ml-2 mr-5 mt-3 navig-todo">
+        <li v-for="(todo, index) in todos" :key="todo.id" :class="{ todo }">
+          <b-list-group-item>
+            <b-row>
+              <b-col sm="10" class="text-left">
+                <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
+                  {{ todo.title }}
+                </h5>
+              </b-col>
+              <b-col sm="2">
+                <b-button variant="danger" @click="removeTodo(index)"
+                  >Remove</b-button
+                >
+              </b-col>
+            </b-row>
+          </b-list-group-item>
+        </li>
+      </b-list-group>
+    </ul>
+
+    <b-row class="mt-4">
       <b-col sm="4">
         <b-button variant="success" @click="markAllDone"
           >Mark all done</b-button
@@ -36,23 +55,6 @@
         <b-button variant="danger" @click="removeAll">Remove all</b-button>
       </b-col>
     </b-row>
-
-    <ul>
-      <li v-for="(todo, index) in todos" :key="todo.id" :class="{ todo }">
-        <b-row>
-          <b-col sm="4">
-            <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
-              {{ todo.title }}
-            </h5>
-          </b-col>
-          <b-col sm="2">
-            <b-button variant="danger" @click="removeTodo(index)"
-              >Remove</b-button
-            >
-          </b-col>
-        </b-row>
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -203,4 +205,19 @@ export default {
 .done {
   text-decoration: line-through;
 }
+
+ul {
+  list-style-type: none;
+}
+
+.navig-todo {
+  max-height: 75vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.display-todo {
+  display: ruby;
+}
+
 </style>

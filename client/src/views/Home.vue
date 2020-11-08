@@ -6,11 +6,10 @@
       <ul class="sidenav__list">
         <li class="sidenav__list-item" @click="clickNavItem(0)">Dashboard</li>
         <li class="sidenav__list-item" @click="clickNavItem(1)">Notes</li>
-        <!-- <li class="sidenav__list-item" @click="clickNavItem(2)">Pomodoro</li> -->
-        <li class="sidenav__list-item" @click="clickNavItem(2)">Timer</li>
         <li class="sidenav__list-item" @click="clickNavItem(3)">To Do</li>
-        <li class="sidenav__list-item" @click="clickNavItem(4)">Vanchor</li>
-        <li class="sidenav__list-item">Tâches (à faire)</li>
+        <li class="sidenav__list-item" @click="clickNavItem(2)">Timer</li>
+        <li class="sidenav__list-item" @click="clickNavItem(4)">Vanchor (a faire)</li>
+        <li class="sidenav__list-item">Kanban (a faire)</li>
       </ul>
     </aside>
     <main class="main">
@@ -54,7 +53,7 @@ export default {
     // });
 
     onMounted(() => {
-      navItem.value = [false, false, false, true, false];
+      navItem.value = [false, false, true, false, false];
     });
 
     function clickNavItem(id) {

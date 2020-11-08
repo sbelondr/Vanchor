@@ -1,74 +1,72 @@
 <template>
   <div class="Note">
-    <h3>Notes</h3>
-    <div class="addNote">
+    <h3 class="mt-3">Notes</h3>
+    <div class="ml-5 mt-5">
       <b-row>
-        <b-col sm="4">
+        <b-col sm="3">
           <b-form-input
             type="text"
             v-model="title"
             placeholder="Title note"
           ></b-form-input>
         </b-col>
-        <b-col sm="4">
-          <b-button @click="addNote">Launch Stackedit</b-button>
+        <b-col sm="2" class="text-left">
+          <b-button @click="handleAddNote">Launch Stackedit</b-button>
         </b-col>
       </b-row>
     </div>
-    <div>
-      <ul>
-        <li v-for="note in allNotes" :key="note.id" :class="{ note }">
-          <div>
-            <tr>
-              <th>
-                <h3 @click="editNote(note)">
-                  {{ note.title }}
-                </h3>
-              </th>
-
-              <th>
-                <div>
-                  <!-- <b-button v-b-modal.modal-1 variant="outline-primary">Edit title</b-button> -->
-                </div>
-              </th>
-
-              <th>
-                <b-button variant="outline-danger" @click="deleteNote(note)"
-                  >Delete note</b-button
-                >
-              </th>
-            </tr>
-          </div>
-        </li>
-      </ul>
+    <div class="manageNote">
+      <div class="displayList">
+        <ul class="navig-todo" fluid="sm">
+          <b-list-group>
+            <li v-for="note in allNotes" :key="note.id" :class="{ note }">
+              <b-list-group-item>
+                <b-row>
+                  <b-col
+                    sm="6"
+                    class="titleNote"
+                    @click="displayThisContent(note)"
+                  >
+                    <h5>
+                      {{ note.title }}
+                    </h5>
+                  </b-col>
+                  <b-col sm="2" class="btnNote">
+                    <b-button variant="outline-primary" @click="handleEditNote(note)"
+                      >Edit</b-button
+                    >
+                  </b-col>
+                  <b-col sm="2" class="btnNote">
+                    <b-button variant="outline-danger" @click="handleDeleteNote(note)"
+                      >Delete</b-button
+                    >
+                  </b-col>
+                </b-row>
+              </b-list-group-item>
+            </li>
+          </b-list-group>
+        </ul>
+      </div>
+      <div class="text-left displayMarkdown" v-html="displayMarkdownContent" />
     </div>
-
-    <b-modal id="modal-1" title="Edit title">
-      <b-input-group>
-        <b-form-input
-          type="text"
-          min="0.00"
-          v-model="titleNoteEdit"
-        ></b-form-input>
-      </b-input-group>
-    </b-modal>
   </div>
 </template>
 
 <script>
+import marked from "marked";
 import {
   ref,
   onMounted,
-  // reactive
 } from "@vue/composition-api";
 import Stackedit from "stackedit-js";
+import { addNote, editNote, deleteNote, getNote } from "@/models/Note";
 
 export default {
   name: "Note",
   setup() {
     const title = ref("");
     const allNotes = ref([]);
-    const titleNoteEdit = ref("");
+    const displayMarkdownContent = ref("");
 
     function launchStackEdit(note, isNew) {
       const stackedit = new Stackedit();
@@ -77,7 +75,7 @@ export default {
       stackedit.openFile({
         name: note.title, // with a filename
         content: {
-          text: note.content, // and the Markdown content.
+          text: note.content, // Markdown content.
         },
       });
       stackedit.on("fileChange", (file) => {
@@ -90,18 +88,9 @@ export default {
             title: note.title,
             content: note.content,
           });
-          const axios = require("axios").default;
-          axios.post("http://localhost:3000/note", {
-            title: note.title,
-            content: note.content,
-          });
+          addNote(note.title, note.content);
         } else {
-          const axios = require("axios").default;
-          axios.post("http://localhost:3000/note/" + note.id, {
-            id: note.id,
-            title: note.title,
-            content: note.content,
-          });
+          editNote(note.id, note.title, note.content);
           allNotes.value.forEach((n) => {
             if (n.id == note.id) {
               n.content = note.content;
@@ -111,11 +100,15 @@ export default {
       });
     }
 
-    function editNote(note) {
+    function displayThisContent(note) {
+      displayMarkdownContent.value = marked(note.content, { sanitize: true });
+    }
+
+    function handleEditNote(note) {
       launchStackEdit(note, false);
     }
 
-    function addNote() {
+    function handleAddNote() {
       const note = {
         id: Date.now(),
         title: title.value,
@@ -125,13 +118,12 @@ export default {
       title.value = "";
     }
 
-    function deleteNote(note) {
+    function handleDeleteNote(note) {
       this.$bvModal
         .msgBoxConfirm("Are you sure?")
         .then((value) => {
           if (value) {
-            const axios = require("axios").default;
-            axios.delete("http://localhost:3000/note/" + note.title);
+            deleteNote(note.title);
             allNotes.value = allNotes.value.filter(
               (n) => n.title != note.title
             );
@@ -142,32 +134,18 @@ export default {
         });
     }
 
-    onMounted(() => {
-      const axios = require("axios").default;
-      axios
-        .get("http://localhost:3000/note", {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        })
-        .then((res) => {
-          for (const note of res.data) {
-            allNotes.value.push({
-              id: note._id,
-              title: note.title,
-              content: note.content,
-            });
-          }
-        });
+    onMounted(async () => {
+      allNotes.value = await getNote();
     });
 
     return {
       title,
-      titleNoteEdit,
       allNotes,
-      addNote,
-      editNote,
-      deleteNote,
+      handleAddNote,
+      handleEditNote,
+      handleDeleteNote,
+      displayThisContent,
+      displayMarkdownContent,
     };
   },
 };
@@ -176,5 +154,44 @@ export default {
 <style scoped>
 .note {
   cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.navig-todo {
+  max-height: 75vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.titleNote {
+  text-align: left;
+}
+
+.btnNote {
+  display: flex;
+  align-content: flex-end;
+}
+
+.manageNote {
+  display: flex;
+  margin-top: 5vh;
+}
+
+.displayList {
+  flex-grow: 1;
+}
+
+.displayMarkdown {
+  margin-left: 2vw;
+  flex-grow: 5;
+  text-align: left;
+  text-decoration-style: none;
+  max-height: 75vh;
+  max-width: 50vw;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 </style>

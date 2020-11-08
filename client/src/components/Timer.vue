@@ -1,76 +1,67 @@
 <template>
-<div class="Timer">
-  <h3>Clock</h3>
-  <div class="grid-radio">
-    <b-form-group label="Choice timer mode">
-      <b-form-radio v-model="selected" @change="clickRadioButton('stopwatch')" class="radio-stopwatch" name="some-radios" value="stopwatch">Stopwatch</b-form-radio>
-      <b-form-radio v-model="selected" @change="clickRadioButton('timer')" class="radio-timer" name="some-radios" value="timer">Timer</b-form-radio>
-      <b-form-radio v-model="selected" @change="clickRadioButton('pomodoro')" class="radio-pomodoro" name="some-radios" value="pomodoro">Pomodoro</b-form-radio>
-    </b-form-group>
-  </div>
-  <p>{{ data.hours }} : {{ data.min }} : {{ data.sec }}</p>
-  <div class="grid-btn">
-    <b-button variant="danger" @click="clickBtnReset">Stop</b-button>
-    <b-button variant="success" @click="clickBtnStart">{{
+  <div class="Timer">
+    <h3>Clock</h3>
+    <div class="grid-radio">
+      <b-form-group label="Choice timer mode">
+        <b-form-radio
+          v-model="selected"
+          @change="clickRadioButton('stopwatch')"
+          class="radio-stopwatch"
+          name="some-radios"
+          value="stopwatch"
+          >Stopwatch</b-form-radio
+        >
+        <b-form-radio
+          v-model="selected"
+          @change="clickRadioButton('timer')"
+          class="radio-timer"
+          name="some-radios"
+          value="timer"
+          >Timer</b-form-radio
+        >
+        <b-form-radio
+          v-model="selected"
+          @change="clickRadioButton('pomodoro')"
+          class="radio-pomodoro"
+          name="some-radios"
+          value="pomodoro"
+          >Pomodoro</b-form-radio
+        >
+      </b-form-group>
+    </div>
+    <p>{{ data.hours }} : {{ data.min }} : {{ data.sec }}</p>
+    <div class="grid-btn">
+      <b-button variant="danger" @click="clickBtnReset">Stop</b-button>
+      <b-button variant="success" @click="clickBtnStart">{{
         data.nameBtnSuccess
       }}</b-button>
-  </div>
-  <div class="inputTime" v-if="selected != 'stopwatch' && data.nameBtnSuccess == 'Play'">
-    <b-row>
-      <b-col sm="2" class="pb-2">
-        <h4 v-if="selected == 'pomodoro'">Enter work time</h4>
-        <h4 v-if="selected == 'timer'">Edit timer</h4>
-      </b-col>
-      <b-col sm="1" class="pb-2">
-        <b-form-input type="number" v-model="data.input.inputHours" placeholder="hh"></b-form-input>
-      </b-col>
-      <b-col sm="1" class="pb-2">
-        <b-form-input type="number" v-model="data.input.inputMin" placeholder="mm"></b-form-input>
-      </b-col>
-      <b-col sm="1" class="pb-2">
-        <b-form-input type="number" v-model="data.input.inputSec" placeholder="ss"></b-form-input>
-      </b-col>
-    </b-row>
-
-    <div class="inputPomodoro" v-if="selected == 'pomodoro'">
-      <b-row>
-        <b-col sm="2" class="pb-2">
-          <h4>Enter break pause</h4>
-        </b-col>
-        <b-col sm="1" class="pb-2">
-          <b-form-input type="number" v-model="data.input.inputPomodoroHours" placeholder="hh"></b-form-input>
-        </b-col>
-        <b-col sm="1" class="pb-2">
-          <b-form-input type="number" v-model="data.input.inputPomodoroMin" placeholder="mm"></b-form-input>
-        </b-col>
-        <b-col sm="1" class="pb-2">
-          <b-form-input type="number" v-model="data.input.inputPomodoroSec" placeholder="ss"></b-form-input>
-        </b-col>
-      </b-row>
     </div>
-    <b-row>
-      <b-col sm="6">
-        <b-button variant="secondary" @click="clickBtnEditTime">Valid time</b-button>
-      </b-col>
-    </b-row>
+    <div
+      class="input-settings"
+      v-if="selected != 'stopwatch' && data.nameBtnSuccess == 'Play'"
+    >
+      <h4>Settings timer</h4>
+      <div class="input-pomodoro" v-if="selected == 'pomodoro'">
+        <h5>Work time</h5>
+        <SettingTimer key="pomodoro-work" @update="timerUpdate" :lastValue="data.pomodoro[0].toString()" />
+        <h5>Break time</h5>
+        <SettingTimer key="pomodoro-break" @update="pomodoroUpdate" :lastValue="data.pomodoro[1].toString()" />
+      </div>
+      <div class="input-time" v-else>
+        <SettingTimer key="timer" @update="timerUpdate" :lastValue="data.timer.toString()" />
+      </div>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-import {
-  reactive,
-  ref,
-  onMounted
-} from "@vue/composition-api";
-
+import { reactive, ref, onMounted } from "@vue/composition-api";
 import Notif from "@/functions/notification";
 
-/**
- * TODO export function chrono in other file
- */
-
 export default {
+  components: {
+    SettingTimer: () => import("@/components/SettingTimer"),
+  },
   setup() {
     const selected = ref("timer");
     const data = reactive({
@@ -84,14 +75,6 @@ export default {
       isPlay: false,
       timer: 120,
       pomodoro: [1500, 120, true],
-      input: {
-        inputHours: 0,
-        inputMin: 0,
-        inputSec: 0,
-        inputPomodoroHours: 0,
-        inputPomodoroMin: 0,
-        inputPomodoroSec: 0,
-      },
     });
 
     function clearTimer() {
@@ -165,26 +148,22 @@ export default {
       clickRadioButton(selected.value);
     }
 
-    function clickBtnEditTime() {
-      const first =
-        (parseInt(data.input.inputHours, 10) || 0) * 60 * 60 +
-        (parseInt(data.input.inputMin, 10) || 0) * 60 +
-        (parseInt(data.input.inputSec, 10) || 0);
-
+    function timerUpdate(value) {
       if (selected.value == "pomodoro") {
-        const second =
-          (parseInt(data.input.inputPomodoroHours, 10) || 0) * 60 * 60 +
-          (parseInt(data.input.inputPomodoroMin, 10) || 0) * 60 +
-          (parseInt(data.input.inputPomodoroSec, 10) || 0);
-        data.pomodoro = [first, second];
-        clickRadioButton(selected.value);
+        data.pomodoro[0] = value;
       } else {
-        data.timer = first;
-        clickRadioButton(selected.value);
+        data.timer = value;
       }
+      clickRadioButton(selected.value);
+    }
+
+    function pomodoroUpdate(value) {
+      data.pomodoro[1] = value;
+      clickRadioButton(selected.value);
     }
 
     onMounted(() => {
+      Notif.getPermissionNotif();
       clickRadioButton(selected.value);
     });
 
@@ -195,7 +174,8 @@ export default {
       clickBtnStart,
       clickBtnReset,
       clickRadioButton,
-      clickBtnEditTime,
+      timerUpdate,
+      pomodoroUpdate,
     };
   },
 };
@@ -218,4 +198,13 @@ export default {
 .radio-pomodoro {
   grid-row: 3;
 }
+
+.input-settings {
+  margin-top: 5%;
+}
+
+.input-pomodoro h5 {
+  margin-top: 2%;
+}
+
 </style>
