@@ -13,7 +13,6 @@ Dashboard with my personal tools:
 
 ### Bug / to do
 
- - [ ] timer bug stopwatch
  - [ ] drag & drop todo
  - [ ] Kanban
  - [ ] init database

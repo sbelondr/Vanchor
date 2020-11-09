@@ -170,6 +170,7 @@ export default {
       data.nameBtnSuccess = "Pause";
       data.isPlay = true;
       data.statInterval = setInterval(() => {
+        data.counter = parseInt(data.counter, 10);
         calcFormat(neg ? data.counter - 1 : data.counter + 1);
       }, 1000);
     }
