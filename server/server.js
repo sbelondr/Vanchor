@@ -14,6 +14,7 @@ const {
   getTodo,
   insertTodo,
   updateTodo,
+  updateTodoId,
   deleteTodo
 } = require('./models/todo');
 
@@ -54,11 +55,15 @@ app
     getTodo(res)
   })
   .post('/todo', (req, res) => {
-    insertTodo(req.body.title, req.body.check);
+    insertTodo(req.body.id, req.body.title, req.body.check);
     res.sendStatus(200);
   })
   .post('/todo/:id', (req, res) => {
     updateTodo(req.body.title, req.body.check);
+    res.sendStatus(200);
+  })
+  .post('/todo/id/:id', (req, res) => {
+    updateTodoId(req.body.id, req.body.title, req.body.check);
     res.sendStatus(200);
   })
   .delete('/todo/:id', (req, res) => {

@@ -2,6 +2,9 @@
 
 **Just to train me**
 
+- Vue 3
+- Express
+- Mongo
 
 Dashboard with my personal tools:
 
@@ -13,12 +16,12 @@ Dashboard with my personal tools:
 
 ### Bug / to do
 
- - [ ] drag & drop todo
+ - [ ] beforeunload not working correctly (save data before leaving)
+ - [ ] Vanchor
  - [ ] Kanban
+ - [ ] Dashboard (currently empty)
  - [ ] init database
  - [ ] unit test
- - [ ] Vanchor
- - [ ] Dashboard (currently empty)
 
 ## Client
 

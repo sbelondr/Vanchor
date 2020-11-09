@@ -53,7 +53,7 @@ export default {
     // });
 
     onMounted(() => {
-      navItem.value = [false, false, true, false, false];
+      navItem.value = [false, false, false, true, false];
     });
 
     function clickNavItem(id) {

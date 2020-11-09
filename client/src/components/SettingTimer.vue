@@ -18,34 +18,6 @@
       @change="transformDataToSec"
       placeholder="ss"
     ></b-form-input>
-    <!-- <div>
-      <b-row>
-        <b-col sm="1" class="pb-2">
-          <b-form-input
-            type="number"
-            v-model="timer[0]"
-            @change="transformDataToSec"
-            placeholder="hh"
-          ></b-form-input>
-        </b-col>
-        <b-col sm="1" class="pb-2">
-          <b-form-input
-            type="number"
-            v-model="timer[1]"
-            @change="transformDataToSec"
-            placeholder="mm"
-          ></b-form-input>
-        </b-col>
-        <b-col sm="1" class="pb-2">
-          <b-form-input
-            type="number"
-            v-model="timer[2]"
-            @change="transformDataToSec"
-            placeholder="ss"
-          ></b-form-input>
-        </b-col>
-      </b-row>
-    </div> -->
   </div>
 </template>
 

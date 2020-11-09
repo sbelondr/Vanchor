@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 export interface ITodo {
-  id: string;
+  id: number;
   title: string;
   done: number;
 }
@@ -21,18 +21,22 @@ export function getTodo() {
     .then((res: any) => {
       for (const data of res.data) {
         allTodos.push({
-          id: data._id,
+          id: data.id,
           title: data.title,
           done: data.check,
         });
       }
+      allTodos.sort((a, b) => {
+        return a.id > b.id ? 1 : 0;
+      });
     });
   return allTodos;
 }
 
-export function addTodo(title: string) {
+export function addTodo(id: number, title: string) {
   const axios = require("axios").default;
   axios.post(url, {
+    id: id,
     title: title,
     check: 0,
   });
@@ -43,6 +47,14 @@ export function editTodo(title: string, done: number) {
   axios.post(url + title, {
     title: title,
     check: done,
+  });
+}
+
+export function editTodoId(id: number, title: string, done: number) {
+  const axios = require("axios").default;
+  axios.post(url + "id/" + title, {
+    id: id,
+    title: title,
   });
 }
 

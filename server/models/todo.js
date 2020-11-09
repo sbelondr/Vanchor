@@ -54,25 +54,25 @@ getTodoFilter = (res, columnFilter) => {
 ** insert todo
 */
 
-const insertDocuments = function (db, title, isCheck, callback) {
+const insertDocuments = function (db, id, title, isCheck, callback) {
   // Get the documents collection
   const collection = db.collection(collectionName);
   // Insert some documents
   collection.insertMany([
-    { title: title, check: isCheck }
+    { id: id, title: title, check: isCheck }
   ], function (err, result) {
     assert.strictEqual(err, null);
     callback(result);
   });
 }
 
-insertTodo = (title, isCheck) => {
+insertTodo = (id, title, isCheck) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     
     const db = client.db(dbName);
 
-    insertDocuments(db, title, isCheck, function () {
+    insertDocuments(db, id, title, isCheck, function () {
       client.close();
     });
   });
@@ -94,11 +94,11 @@ const updateDocumentIsCheck = function (db, pTitle, pCheck, callback) {
   });
 }
 
-const updateDocumentTitle = function (db, pTitle, callback) {
+const updateDocumentId = function (db, pId, pTitle, callback) {
   const collection = db.collection(collectionName);
   
   collection.updateOne({ title : pTitle }
-    , { $set: { title: pTitle } }, function(err, result) {
+    , { $set: { id: pId } }, function(err, result) {
     assert.strictEqual(err, null);
     callback(result);
   });
@@ -115,12 +115,12 @@ updateTodo = (pTitle, pCheck) => {
   });
 }
 
-updateTodoTitle = (pTitle) => {
+updateTodoId = (pId, pTitle) => {
   MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
     assert.strictEqual(null, err);
     const db = client.db(dbName);
     
-    updateDocumentTitle(db, pTitle, function () {
+    updateDocumentId(db, pId, pTitle, function () {
       client.close();
     });
   });
@@ -159,6 +159,6 @@ exports.getTodoFilter = getTodoFilter;
 exports.insertTodo = insertTodo;
 
 exports.updateTodo = updateTodo;
-exports.updateTodoTitle = updateTodoTitle;
+exports.updateTodoId = updateTodoId;
 
 exports.deleteTodo = deleteTodo;

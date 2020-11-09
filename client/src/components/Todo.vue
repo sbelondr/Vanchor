@@ -21,22 +21,29 @@
 
     <ul class="display-todo">
       <b-list-group class="w-50 ml-2 mr-5 mt-3 navig-todo">
-        <li v-for="(todo, index) in allTodo" :key="todo.id" :class="{ todo }">
-          <b-list-group-item>
-            <b-row>
-              <b-col sm="10" class="text-left">
-                <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
-                  {{ todo.title }}
-                </h5>
-              </b-col>
-              <b-col sm="2">
-                <b-button variant="danger" @click="removeTodo(index)"
-                  >Remove</b-button
-                >
-              </b-col>
-            </b-row>
-          </b-list-group-item>
-        </li>
+        <draggable
+          v-model="allTodo"
+          group="people"
+          @start="drag = true"
+          @end="drag = false"
+        >
+          <li v-for="(todo, index) in allTodo" :key="todo.id" :class="{ todo }">
+            <b-list-group-item>
+              <b-row>
+                <b-col sm="10" class="text-left">
+                  <h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
+                    {{ todo.title }}
+                  </h5>
+                </b-col>
+                <b-col sm="2">
+                  <b-button variant="danger" @click="removeTodo(index)"
+                    >Remove</b-button
+                  >
+                </b-col>
+              </b-row>
+            </b-list-group-item>
+          </li>
+        </draggable>
       </b-list-group>
     </ul>
 
@@ -59,23 +66,48 @@
 </template>
 
 <script>
-import { ref, onMounted } from "@vue/composition-api";
+import { ref, onMounted, onBeforeUnmount } from "@vue/composition-api";
 
-import { getTodo, addTodo, editTodo, deleteTodo } from "@/models/Todo";
+import {
+  getTodo,
+  addTodo,
+  editTodo,
+  editTodoId,
+  deleteTodo,
+} from "@/models/Todo";
+
+import draggable from "vuedraggable";
 
 export default {
   name: "Todo",
+  components: {
+    draggable,
+  },
   setup() {
     const newTodo = ref("");
     const allTodo = ref([]);
 
-    function sortList() {
-      allTodo.value.sort((a, b) => a.done && !b.done);
+    function saveOrder() {
+      let i = 0;
+      console.log("am here");
+      console.log(allTodo);
+      for (const line of allTodo.value) {
+        editTodoId(i, line.title);
+        ++i;
+      }
     }
+
+    onBeforeUnmount(() => {
+      saveOrder();
+    });
+
+    // function sortList() {
+    //   allTodo.value.sort((a, b) => a.done && !b.done);
+    // }
 
     function startTodo() {
       allTodo.value = getTodo();
-      sortList();
+      // sortList();
     }
 
     function searchDoublon(value) {
@@ -91,12 +123,11 @@ export default {
       const size = newTodo.value.length;
       if (size > 0 && size < 51 && searchDoublon(newTodo.value)) {
         allTodo.value.push({
-          id: Date.now(),
+          id: allTodo.value.length,
           done: false,
           title: newTodo.value,
         });
         addTodo(newTodo.value);
-        sortList();
         newTodo.value = "";
       }
     }
@@ -104,7 +135,7 @@ export default {
     function toggleDone(todo) {
       editTodo(todo.title, todo.done ? 0 : 1);
       todo.done = !todo.done;
-      sortList();
+      // sortList();
     }
 
     function markAllDone() {
@@ -155,6 +186,8 @@ export default {
 
     onMounted(() => {
       startTodo();
+      //! beforeunload not working correctly 
+      document.addEventListener('beforeunload', () => saveOrder());
     });
 
     return {
@@ -166,6 +199,7 @@ export default {
       removeAllDone,
       toggleDone,
       removeTodo,
+      saveOrder,
     };
   },
 };
