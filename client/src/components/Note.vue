@@ -81,14 +81,17 @@ export default {
       stackedit.on("fileChange", (file) => {
         note.content = file.content.text;
       });
-      stackedit.on("close", () => {
+      stackedit.on("close", async () => {
         if (isNew) {
+          let id = 0;
+          await addNote(note.title, note.content).then((value) => {
+            id = value.data.id;
+          });
           allNotes.value.push({
-            id: note.id,
+            id: id,
             title: note.title,
             content: note.content,
           });
-          addNote(note.title, note.content);
         } else {
           editNote(note.id, note.title, note.content);
           allNotes.value.forEach((n) => {
@@ -123,7 +126,7 @@ export default {
         .msgBoxConfirm("Are you sure?")
         .then((value) => {
           if (value) {
-            deleteNote(note.title);
+            deleteNote(note.id);
             allNotes.value = allNotes.value.filter(
               (n) => n.title != note.title
             );

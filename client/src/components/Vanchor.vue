@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     testMoi() {
-      console.log("je suis la dedans");
       console.log(this.data.valueSearch);
     },
   },

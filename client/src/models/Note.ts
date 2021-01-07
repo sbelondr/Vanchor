@@ -6,25 +6,34 @@ export interface INote {
   content: string;
 }
 
-export function addNote(title: string, content: string) {
+const url = "http://localhost:3000/api/note/";
+
+export async function addNote(title: string, content: string) {
   const axios = require("axios").default;
-  axios.post("http://localhost:3000/note", {
+  const result = await axios.post(url, {
     title: title,
     content: content,
   });
+  return result;
 };
 
-export function editNote(id: string, title: string, content: string) {
+export async function editNote(id: string, title: string, content: string) {
   const axios = require("axios").default;
-  axios.post("http://localhost:3000/note/" + id, {
+  await axios.post(url + 'update', {
+    id: id,
     title: title,
     content: content,
+  }).then((res: Response) => {
+    console.log(res);
+    
+    return res;
   });
+  return null;
 };
 
-export function deleteNote(title: string) {
+export function deleteNote(id: string) {
   const axios = require("axios").default;
-  axios.delete("http://localhost:3000/note/" + title);
+  axios.delete(url + id);
 };
 
 export function getNote() {
@@ -32,7 +41,7 @@ export function getNote() {
   const axios = require("axios").default;
 
   axios
-    .get("http://localhost:3000/note", {
+    .get(url, {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },

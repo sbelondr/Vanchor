@@ -7,13 +7,13 @@ export interface ITimer {
   timer: number;
 }
 
-const url = "http://localhost:3000/timer/";
+const url = "http://localhost:3000/api/timer/";
 
-export function getTimer() {
+export async function getTimer() {
   const axios = require("axios").default;
   let timer: ITimer = { id: "", mode: "", pomodoro: "", timer: 0 };
 
-  return axios
+  await axios
     .get(url, {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -28,14 +28,15 @@ export function getTimer() {
       };
       return timer
     });
-//   return timer;
+  return timer;
 }
 
-export function updateTimer(mode: string, pomodoro: string, timer: number) {
+export async function updateTimer(id: string, mode: string, pomodoro: string, timer: number) {
   const axios = require("axios").default;
-  axios.post(url, {
-    mode: mode,
+  await axios.post(url + 'update', {
+    id: id,
+    mode: 'stopwatch',
     pomodoro: pomodoro,
     timer: timer,
-  });
+  }).then((value: any) => console.log(value.data.result));
 }

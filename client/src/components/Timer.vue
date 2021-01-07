@@ -63,6 +63,7 @@
         />
       </div>
     </div>
+    <button @click="manuallyUpdate">update db (a refaire)</button>
   </div>
 </template>
 
@@ -86,6 +87,7 @@ export default {
   setup() {
     const selected = ref("timer");
     const data = reactive({
+      id: 0,
       counter: 0,
       hours: "00",
       min: "00",
@@ -220,17 +222,12 @@ export default {
       const time = await getTimer();
 
       return new Promise(() => {
+        data.id = time.id;
         const pomSplit = time.pomodoro.split(":");
         data.pomodoro[0] = parseInt(pomSplit[0], 10);
         data.pomodoro[1] = parseInt(pomSplit[1], 10);
         data.timer = time.timer;
         selected.value = time.mode;
-        // console.log(time);
-        // console.groupCollapsed('fetchData');
-        // console.log(data.pomodoro);
-        // console.log(data.timer);
-        // console.log(selected.value);
-        // console.groupEnd();
       });
     };
 
@@ -240,15 +237,19 @@ export default {
       clickRadioButton(selected.value);
     });
 
+    function manuallyUpdate() {
+      updateTimer(
+        data.id,
+        selected.value,
+        getPomodoroFormat(data.pomodoro[0], data.pomodoro[1]),
+        data.timer
+      );
+    }
+
     /**
      * save data
      */
     onBeforeUnmount(() => {
-      // console.groupCollapsed('onUnmounted');
-      // console.log(data.pomodoro);
-      // console.log(data.timer);
-      // console.log(selected.value);
-      // console.groupEnd();
       updateTimer(
         selected.value,
         getPomodoroFormat(data.pomodoro[0], data.pomodoro[1]),
@@ -265,6 +266,7 @@ export default {
       clickRadioButton,
       timerUpdate,
       pomodoroUpdate,
+      manuallyUpdate
     };
   },
 };

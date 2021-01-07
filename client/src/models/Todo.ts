@@ -6,7 +6,7 @@ export interface ITodo {
   done: number;
 }
 
-const url = "http://localhost:3000/todo/";
+const url = "http://localhost:3000/api/todo/";
 
 export function getTodo() {
   const axios = require("axios").default;
@@ -21,7 +21,7 @@ export function getTodo() {
     .then((res: any) => {
       for (const data of res.data) {
         allTodos.push({
-          id: data.id,
+          id: data._id,
           title: data.title,
           done: data.check,
         });
@@ -30,35 +30,30 @@ export function getTodo() {
         return a.id > b.id ? 1 : 0;
       });
     });
+    
   return allTodos;
 }
 
-export function addTodo(id: number, title: string) {
+export async function addTodo(title: string) {
   const axios = require("axios").default;
-  axios.post(url, {
-    id: id,
+  const result = await axios.post(url, {
     title: title,
     check: 0,
   });
+  return result;
+  
 }
 
-export function editTodo(title: string, done: number) {
+export function editTodo(id: string, title: string, done: number) {
   const axios = require("axios").default;
-  axios.post(url + title, {
+  axios.post(url + 'update', {
+    id: id,
     title: title,
     check: done,
   });
 }
 
-export function editTodoId(id: number, title: string, done: number) {
+export function deleteTodo(id: string) {
   const axios = require("axios").default;
-  axios.post(url + "id/" + title, {
-    id: id,
-    title: title,
-  });
-}
-
-export function deleteTodo(title: string) {
-  const axios = require("axios").default;
-  axios.delete(url + title);
+  axios.delete(url + id);
 }

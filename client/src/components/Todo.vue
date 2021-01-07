@@ -66,13 +66,12 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeUnmount } from "@vue/composition-api";
+import { ref, onMounted } from "@vue/composition-api";
 
 import {
   getTodo,
   addTodo,
   editTodo,
-  editTodoId,
   deleteTodo,
 } from "@/models/Todo";
 
@@ -87,19 +86,19 @@ export default {
     const newTodo = ref("");
     const allTodo = ref([]);
 
-    function saveOrder() {
-      let i = 0;
-      console.log("am here");
-      console.log(allTodo);
-      for (const line of allTodo.value) {
-        editTodoId(i, line.title);
-        ++i;
-      }
-    }
+    // function saveOrder() {
+    //   let i = 0;
+    //   console.log("am here");
+    //   console.log(allTodo);
+    //   for (const line of allTodo.value) {
+    //     editTodoId(i, line.title);
+    //     ++i;
+    //   }
+    // }
 
-    onBeforeUnmount(() => {
-      saveOrder();
-    });
+    // onBeforeUnmount(() => {
+    //   saveOrder();
+    // });
 
     // function sortList() {
     //   allTodo.value.sort((a, b) => a.done && !b.done);
@@ -119,28 +118,31 @@ export default {
       return true;
     }
 
-    function addNewTodo() {
+    async function addNewTodo() {
       const size = newTodo.value.length;
       if (size > 0 && size < 51 && searchDoublon(newTodo.value)) {
+        let id = 0;
+        await addTodo(newTodo.value).then((value) => {
+          id = value.data.id;
+        });
         allTodo.value.push({
-          id: allTodo.value.length,
+          id: id,
           done: false,
           title: newTodo.value,
         });
-        addTodo(newTodo.value);
         newTodo.value = "";
       }
     }
 
     function toggleDone(todo) {
-      editTodo(todo.title, todo.done ? 0 : 1);
+      editTodo(todo.id, todo.title, todo.done ? 0 : 1);
       todo.done = !todo.done;
       // sortList();
     }
 
     function markAllDone() {
       allTodo.value.forEach((todo) => {
-        editTodo(todo.title, 1);
+        editTodo(todo.id, todo.title, 1);
         todo.done = true;
       });
     }
@@ -151,7 +153,7 @@ export default {
         .then((value) => {
           if (value) {
             for (const todo of allTodo.value) {
-              deleteTodo(todo.title);
+              deleteTodo(todo.id);
             }
             allTodo.value = [];
           }
@@ -168,7 +170,7 @@ export default {
           if (value) {
             allTodo.value = allTodo.value.filter((todo) => {
               if (todo.done == true) {
-                deleteTodo(todo.title);
+                deleteTodo(todo.id);
               }
               return todo.done == false;
             });
@@ -180,14 +182,14 @@ export default {
     }
 
     function removeTodo(index) {
-      deleteTodo(allTodo.value[index].title);
+      deleteTodo(allTodo.value[index].id);
       allTodo.value.splice(index, 1);
     }
 
     onMounted(() => {
       startTodo();
       //! beforeunload not working correctly 
-      document.addEventListener('beforeunload', () => saveOrder());
+      // document.addEventListener('beforeunload', () => saveOrder());
     });
 
     return {
@@ -199,7 +201,7 @@ export default {
       removeAllDone,
       toggleDone,
       removeTodo,
-      saveOrder,
+      // saveOrder,
     };
   },
 };
