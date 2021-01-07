@@ -4,7 +4,7 @@
 
 - Vue 3
 - Express
-- Mongo
+- Mongo (with mongoose)
 
 Dashboard with my personal tools:
 
@@ -22,12 +22,20 @@ Dashboard with my personal tools:
  - [ ] Dashboard (currently empty)
  - [ ] init database
  - [ ] unit test
+ - [ ] auth
 
 ## Client
 
 `npm run serve`
 
 ## Server
+
+Add `.env` file :
+```
+PORT='3000'
+MONGO_URI='mongodb://localhost:27017'
+DB_NAME='vanchor'
+```
 
 `nodemon server.js`
 
