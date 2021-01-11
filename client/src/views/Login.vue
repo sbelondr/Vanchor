@@ -6,12 +6,12 @@
 
 <script>
 import {
-ref,
-reactive
-} from "@vue/composition-api";
+	ref,
+	reactive
+} from '@vue/composition-api';
 
 export default {
-name: "Login",
-setup(props) {},
+	name: 'Login',
+	setup(props) {},
 };
 </script>

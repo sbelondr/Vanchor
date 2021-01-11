@@ -33,53 +33,53 @@
 <script>
 // import Vanchor from "./Vanchor";
 import {
-  // reactive,
-  ref,
-  onMounted,
-} from "@vue/composition-api";
+	// reactive,
+	ref,
+	onMounted,
+} from '@vue/composition-api';
 import { logout } from '@/models/Services/User.service';
 import router from '@/router';
 
 export default {
-  name: "Home",
-  components: {
-    Dashboard: () => import("@/components/Dashboard"),
-    Note: () => import("@/components/Note"),
-    Timer: () => import("@/components/Timer"),
-    Todo: () => import("@/components/Todo"),
-    Vanchor: () => import("@/components/Vanchor"),
-  },
-  setup() {
-    const navItem = ref([]);
-    // const data = reactive({
-    // navItem: [true, false, false, false, false, false],
-    // });
+	name: 'Home',
+	components: {
+		Dashboard: () => import('@/components/Dashboard'),
+		Note: () => import('@/components/Note'),
+		Timer: () => import('@/components/Timer'),
+		Todo: () => import('@/components/Todo'),
+		Vanchor: () => import('@/components/Vanchor'),
+	},
+	setup() {
+		const navItem = ref([]);
+		// const data = reactive({
+		// navItem: [true, false, false, false, false, false],
+		// });
 
-    onMounted(() => {
-      navItem.value = [true, false, false, false, false];
-    });
+		onMounted(() => {
+			navItem.value = [true, false, false, false, false];
+		});
 
-    function ftLogout() {
-      logout();
-      router.push('login');
-    }
+		function ftLogout() {
+			logout();
+			router.push('login');
+		}
 
-    function clickNavItem(id) {
-      const newItem = [];
-      navItem.value.forEach((element, i) => {
-        newItem.push(i == id ? true : false);
-      });
-      navItem.value = newItem;
-      // console.table(navItem.value);
-    }
+		function clickNavItem(id) {
+			const newItem = [];
+			navItem.value.forEach((element, i) => {
+				newItem.push(i == id ? true : false);
+			});
+			navItem.value = newItem;
+			// console.table(navItem.value);
+		}
 
-    return {
-      navItem,
-      clickNavItem,
-      ftLogout
-    };
-  },
-  methods: {},
+		return {
+			navItem,
+			clickNavItem,
+			ftLogout
+		};
+	},
+	methods: {},
 };
 </script>
 

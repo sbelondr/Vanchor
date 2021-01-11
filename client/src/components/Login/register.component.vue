@@ -22,7 +22,7 @@
 // } from "@vue/composition-api";
 
 export default {
-name: "register",
+	name: 'register',
 // setup(props) {},
 };
 </script>

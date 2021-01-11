@@ -19,25 +19,25 @@
 </template>
 
 <script lang="ts">
-import router from "@/router";
-import { Component, Vue } from "vue-property-decorator";
+import router from '@/router';
+import { Component, Vue } from 'vue-property-decorator';
 import { login } from '../../models/Services/User.service';
 
 @Component({
-  name: "Login",
-  data: () => ({
-    user: "",
-    password: "",
-  }),
-  // created() {},
-  methods: {
-    async connect() {
-      const user = await login(this.$data.user, this.$data.password);
-      if (user) {
-        router.push('/');
-      }
-    }
-  },
+	name: 'Login',
+	data: () => ({
+		user: '',
+		password: '',
+	}),
+	// created() {},
+	methods: {
+		async connect() {
+			const user = await login(this.$data.user, this.$data.password);
+			if (user) {
+				router.push('/');
+			}
+		}
+	},
 })
 export default class extends Vue {}
 </script>

@@ -53,107 +53,107 @@
 </template>
 
 <script>
-import marked from "marked";
+import marked from 'marked';
 import {
-  ref,
-  onMounted,
-} from "@vue/composition-api";
-import Stackedit from "stackedit-js";
-import { addNote, editNote, deleteNote, getNote } from "@/models/Note";
+	ref,
+	onMounted,
+} from '@vue/composition-api';
+import Stackedit from 'stackedit-js';
+import { addNote, editNote, deleteNote, getNote } from '@/models/Note';
 
 import connect from '../functions/connection';
 
 export default {
-  name: "Note",
-  setup() {
-    const title = ref("");
-    const allNotes = ref([]);
-    const displayMarkdownContent = ref("");
+	name: 'Note',
+	setup() {
+		const title = ref('');
+		const allNotes = ref([]);
+		const displayMarkdownContent = ref('');
 
-    function launchStackEdit(note, isNew) {
-      const stackedit = new Stackedit();
+		function launchStackEdit(note, isNew) {
+			const stackedit = new Stackedit();
 
-      // Open the iframe
-      stackedit.openFile({
-        name: note.title, // with a filename
-        content: {
-          text: note.content, // Markdown content.
-        },
-      });
-      stackedit.on("fileChange", (file) => {
-        note.content = file.content.text;
-      });
-      stackedit.on("close", async () => {
-        if (isNew) {
-          let id = 0;
-          await addNote(note.title, note.content).then((value) => {
-            id = value.data.id;
-          });
-          allNotes.value.push({
-            id: id,
-            title: note.title,
-            content: note.content,
-          });
-        } else {
-          editNote(note.id, note.title, note.content);
-          allNotes.value.forEach((n) => {
-            if (n.id == note.id) {
-              n.content = note.content;
-            }
-          });
-        }
-      });
-    }
+			// Open the iframe
+			stackedit.openFile({
+				name: note.title, // with a filename
+				content: {
+					text: note.content, // Markdown content.
+				},
+			});
+			stackedit.on('fileChange', (file) => {
+				note.content = file.content.text;
+			});
+			stackedit.on('close', async () => {
+				if (isNew) {
+					let id = 0;
+					await addNote(note.title, note.content).then((value) => {
+						id = value.data.id;
+					});
+					allNotes.value.push({
+						id: id,
+						title: note.title,
+						content: note.content,
+					});
+				} else {
+					editNote(note.id, note.title, note.content);
+					allNotes.value.forEach((n) => {
+						if (n.id == note.id) {
+							n.content = note.content;
+						}
+					});
+				}
+			});
+		}
 
-    function displayThisContent(note) {
-      displayMarkdownContent.value = marked(note.content, { sanitize: true });
-    }
+		function displayThisContent(note) {
+			displayMarkdownContent.value = marked(note.content, { sanitize: true });
+		}
 
-    function handleEditNote(note) {
-      launchStackEdit(note, false);
-    }
+		function handleEditNote(note) {
+			launchStackEdit(note, false);
+		}
 
-    function handleAddNote() {
-      const note = {
-        id: Date.now(),
-        title: title.value,
-        content: "",
-      };
-      launchStackEdit(note, true);
-      title.value = "";
-    }
+		function handleAddNote() {
+			const note = {
+				id: Date.now(),
+				title: title.value,
+				content: '',
+			};
+			launchStackEdit(note, true);
+			title.value = '';
+		}
 
-    function handleDeleteNote(note) {
-      this.$bvModal
-        .msgBoxConfirm("Are you sure?")
-        .then((value) => {
-          if (value) {
-            deleteNote(note.id);
-            allNotes.value = allNotes.value.filter(
-              (n) => n.title != note.title
-            );
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+		function handleDeleteNote(note) {
+			this.$bvModal
+				.msgBoxConfirm('Are you sure?')
+				.then((value) => {
+					if (value) {
+						deleteNote(note.id);
+						allNotes.value = allNotes.value.filter(
+							(n) => n.title != note.title
+						);
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		}
 
-    onMounted(async () => {
-      connect.checkConnection();
-      allNotes.value = await getNote();
-    });
+		onMounted(async () => {
+			connect.checkConnection();
+			allNotes.value = await getNote();
+		});
 
-    return {
-      title,
-      allNotes,
-      handleAddNote,
-      handleEditNote,
-      handleDeleteNote,
-      displayThisContent,
-      displayMarkdownContent,
-    };
-  },
+		return {
+			title,
+			allNotes,
+			handleAddNote,
+			handleEditNote,
+			handleDeleteNote,
+			displayThisContent,
+			displayMarkdownContent,
+		};
+	},
 };
 </script>
 
