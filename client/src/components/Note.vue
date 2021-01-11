@@ -1,55 +1,55 @@
 <template>
-  <div class="Note">
-    <h3 class="mt-3">Notes</h3>
-    <div class="ml-5 mt-5">
-      <b-row>
-        <b-col sm="3">
-          <b-form-input
-            type="text"
-            v-model="title"
-            placeholder="Title note"
-          ></b-form-input>
-        </b-col>
-        <b-col sm="2" class="text-left">
-          <b-button @click="handleAddNote">Launch Stackedit</b-button>
-        </b-col>
-      </b-row>
-    </div>
-    <div class="manageNote">
-      <div class="displayList">
-        <ul class="navig-todo" fluid="sm">
-          <b-list-group>
-            <li v-for="note in allNotes" :key="note.id" :class="{ note }">
-              <b-list-group-item>
-                <b-row>
-                  <b-col
-                    sm="6"
-                    class="titleNote"
-                    @click="displayThisContent(note)"
-                  >
-                    <h5>
-                      {{ note.title }}
-                    </h5>
-                  </b-col>
-                  <b-col sm="2" class="btnNote">
-                    <b-button variant="outline-primary" @click="handleEditNote(note)"
-                      >Edit</b-button
-                    >
-                  </b-col>
-                  <b-col sm="2" class="btnNote">
-                    <b-button variant="outline-danger" @click="handleDeleteNote(note)"
-                      >Delete</b-button
-                    >
-                  </b-col>
-                </b-row>
-              </b-list-group-item>
-            </li>
-          </b-list-group>
-        </ul>
-      </div>
-      <div class="text-left displayMarkdown" v-html="displayMarkdownContent" />
-    </div>
-  </div>
+	<div class="Note">
+	<h3 class="mt-3">Notes</h3>
+	<div class="ml-5 mt-5">
+		<b-row>
+		<b-col sm="3">
+			<b-form-input
+			type="text"
+			v-model="title"
+			placeholder="Title note"
+			></b-form-input>
+		</b-col>
+		<b-col sm="2" class="text-left">
+			<b-button @click="handleAddNote">Launch Stackedit</b-button>
+		</b-col>
+		</b-row>
+	</div>
+	<div class="manageNote">
+		<div class="displayList">
+		<ul class="navig-todo" fluid="sm">
+			<b-list-group>
+			<li v-for="note in allNotes" :key="note.id" :class="{ note }">
+				<b-list-group-item>
+				<b-row>
+					<b-col
+					sm="6"
+					class="titleNote"
+					@click="displayThisContent(note)"
+					>
+					<h5>
+						{{ note.title }}
+					</h5>
+					</b-col>
+					<b-col sm="2" class="btnNote">
+					<b-button variant="outline-primary" @click="handleEditNote(note)"
+						>Edit</b-button
+					>
+					</b-col>
+					<b-col sm="2" class="btnNote">
+					<b-button variant="outline-danger" @click="handleDeleteNote(note)"
+						>Delete</b-button
+					>
+					</b-col>
+				</b-row>
+				</b-list-group-item>
+			</li>
+			</b-list-group>
+		</ul>
+		</div>
+		<div class="text-left displayMarkdown" v-html="displayMarkdownContent" />
+	</div>
+	</div>
 </template>
 
 <script>
@@ -59,7 +59,7 @@ import {
 	onMounted,
 } from '@vue/composition-api';
 import Stackedit from 'stackedit-js';
-import { addNote, editNote, deleteNote, getNote } from '@/models/Note';
+import { addNote, editNote, deleteNote, getNote } from '@/models/Services/Note.service';
 
 import connect from '../functions/connection';
 
@@ -159,45 +159,45 @@ export default {
 
 <style scoped>
 .note {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 ul {
-  list-style-type: none;
+	list-style-type: none;
 }
 
 .navig-todo {
-  max-height: 75vh;
-  overflow: scroll;
-  overflow-x: hidden;
+	max-height: 75vh;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 
 .titleNote {
-  text-align: left;
+	text-align: left;
 }
 
 .btnNote {
-  display: flex;
-  align-content: flex-end;
+	display: flex;
+	align-content: flex-end;
 }
 
 .manageNote {
-  display: flex;
-  margin-top: 5vh;
+	display: flex;
+	margin-top: 5vh;
 }
 
 .displayList {
-  flex-grow: 1;
+	flex-grow: 1;
 }
 
 .displayMarkdown {
-  margin-left: 2vw;
-  flex-grow: 5;
-  text-align: left;
-  text-decoration-style: none;
-  max-height: 75vh;
-  max-width: 50vw;
-  overflow: scroll;
-  overflow-x: hidden;
+	margin-left: 2vw;
+	flex-grow: 5;
+	text-align: left;
+	text-decoration-style: none;
+	max-height: 75vh;
+	max-width: 50vw;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 </style>
