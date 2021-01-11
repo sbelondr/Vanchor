@@ -5,7 +5,12 @@ const { noteSchema } = require('../Models/Joi/Note.joi');
 module.exports = {
     get_note: async(req, res, next) => {
         try {
-            const result = await Note.find({});
+            const { id } = req.params;
+            if (!id) {
+                throw createError.BadRequest();
+            }
+            console.log('je suis la');
+            const result = await Note.find({idUser: id});
             res.send(result);
         } catch (error) {
             if (error.isJoi == true) error.status = 422;

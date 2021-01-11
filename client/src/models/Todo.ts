@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import store from "@/store";
+
 export interface ITodo {
   id: number;
   title: string;
@@ -7,17 +9,16 @@ export interface ITodo {
 }
 
 const url = "http://localhost:3000/api/todo/";
+const axios = require("axios").default;
+const config = {
+  headers: { Authorization: `Bearer ${store.getters.getUser.getAccessToken()}` }
+};
 
 export function getTodo() {
-  const axios = require("axios").default;
   const allTodos: ITodo[] = [];
 
   axios
-    .get(url, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
+    .get(url + store.getters.getUser.getId(), config)
     .then((res: any) => {
       for (const data of res.data) {
         allTodos.push({
@@ -35,25 +36,24 @@ export function getTodo() {
 }
 
 export async function addTodo(title: string) {
-  const axios = require("axios").default;
-  const result = await axios.post(url, {
+  const bodyParameters = {
+    idUser: store.getters.getUser.getId(),
     title: title,
     check: 0,
-  });
+  }
+  const result = await axios.post(url, bodyParameters, config);
   return result;
   
 }
 
 export function editTodo(id: string, title: string, done: number) {
-  const axios = require("axios").default;
   axios.post(url + 'update', {
     id: id,
     title: title,
     check: done,
-  });
+  }, config);
 }
 
 export function deleteTodo(id: string) {
-  const axios = require("axios").default;
-  axios.delete(url + id);
+  axios.delete(url + id, config);
 }

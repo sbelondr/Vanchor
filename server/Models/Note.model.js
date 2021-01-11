@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const NoteSchema = new Schema({
+    idUser: {
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         required: true,

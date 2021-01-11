@@ -61,6 +61,8 @@ import {
 import Stackedit from "stackedit-js";
 import { addNote, editNote, deleteNote, getNote } from "@/models/Note";
 
+import connect from '../functions/connection';
+
 export default {
   name: "Note",
   setup() {
@@ -138,6 +140,7 @@ export default {
     }
 
     onMounted(async () => {
+      connect.checkConnection();
       allNotes.value = await getNote();
     });
 

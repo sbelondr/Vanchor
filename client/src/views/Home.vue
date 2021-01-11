@@ -10,6 +10,7 @@
         <li class="sidenav__list-item" @click="clickNavItem(2)">Timer</li>
         <li class="sidenav__list-item" @click="clickNavItem(4)">Vanchor (a faire)</li>
         <li class="sidenav__list-item">Kanban (a faire)</li>
+        <li class="sidenav__list-item" @click="ftLogout">Logout</li>
       </ul>
     </aside>
     <main class="main">
@@ -22,7 +23,7 @@
       </div>
     </main>
     <footer class="footer">
-      <div class="footer__copyright">&copy; 2020 sbelondr</div>
+      <div class="footer__copyright">&copy; 2021 sbelondr</div>
     </footer>
   </div>
   <div></div>
@@ -36,6 +37,8 @@ import {
   ref,
   onMounted,
 } from "@vue/composition-api";
+import { logout } from '@/models/Services/User.service';
+import router from '@/router';
 
 export default {
   name: "Home",
@@ -53,8 +56,13 @@ export default {
     // });
 
     onMounted(() => {
-      navItem.value = [false, false, true, false, false];
+      navItem.value = [true, false, false, false, false];
     });
+
+    function ftLogout() {
+      logout();
+      router.push('login');
+    }
 
     function clickNavItem(id) {
       const newItem = [];
@@ -68,6 +76,7 @@ export default {
     return {
       navItem,
       clickNavItem,
+      ftLogout
     };
   },
   methods: {},

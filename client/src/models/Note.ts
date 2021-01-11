@@ -1,29 +1,36 @@
 /* eslint-disable */
 
+import store from "@/store";
+
 export interface INote {
   id: string;
   title: string;
   content: string;
 }
 
+const axios = require("axios").default;
 const url = "http://localhost:3000/api/note/";
+const config = {
+  headers: {
+    Authorization: `Bearer ${store.getters.getUser.getAccessToken()}`
+  }
+};
 
 export async function addNote(title: string, content: string) {
-  const axios = require("axios").default;
   const result = await axios.post(url, {
+    idUser: store.getters.getUser.getId(),
     title: title,
     content: content,
-  });
+  }, config);
   return result;
 };
 
 export async function editNote(id: string, title: string, content: string) {
-  const axios = require("axios").default;
   await axios.post(url + 'update', {
     id: id,
     title: title,
     content: content,
-  }).then((res: Response) => {
+  }, config).then((res: Response) => {
     console.log(res);
     
     return res;
@@ -32,20 +39,14 @@ export async function editNote(id: string, title: string, content: string) {
 };
 
 export function deleteNote(id: string) {
-  const axios = require("axios").default;
-  axios.delete(url + id);
+  axios.delete(url + id, config);
 };
 
 export function getNote() {
   const allNotes: INote[] = [];
-  const axios = require("axios").default;
 
   axios
-    .get(url, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
+    .get(url + store.getters.getUser.getId(), config)
     .then((res: any) => {
       for (const note of res.data) {
         allNotes.push({

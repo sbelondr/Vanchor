@@ -5,7 +5,11 @@ const { todoSchema } = require('../Models/Joi/Todo.joi');
 module.exports = {
     get_todo: async(req, res, next) => {
         try {
-            const result = await Todo.find({});
+            const { id } = req.params;
+            if (!id) {
+                throw createError.BadRequest();
+            }
+            const result = await Todo.find({idUser: id});
             res.send(result);
         } catch (error) {
             if (error.isJoi == true) error.status = 422;

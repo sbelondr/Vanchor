@@ -5,7 +5,11 @@ const { timerSchema } = require('../Models/Joi/Timer.joi');
 module.exports = {
     get_timer: async(req, res, next) => {
         try {
-            const result = await Timer.findOne({});
+            const { id } = req.params;
+            if (!id) {
+                throw createError.BadRequest();
+            }
+            const result = await Timer.findOne({idUser: id});
             res.send(result);
         } catch (error) {
             if (error.isJoi == true) error.status = 422;

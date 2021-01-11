@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TimerSchema = new Schema({
+    idUser: {
+        type: String,
+        required: true
+    },
     mode: {
         type: String,
         required: true

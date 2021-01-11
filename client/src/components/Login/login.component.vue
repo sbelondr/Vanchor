@@ -10,17 +10,19 @@
           v-model="password"
           type="password"
           placeholder="Password"
-          @keyup.enter="checkLogin"
+          @keyup.enter="connect"
         ></b-form-input>
+        <b-button class="submit" @click="connect">Connection</b-button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import router from "@/router";
 import { Component, Vue } from "vue-property-decorator";
+import { login } from '../../models/Services/User.service';
 
-// inline-table
 @Component({
   name: "Login",
   data: () => ({
@@ -29,11 +31,12 @@ import { Component, Vue } from "vue-property-decorator";
   }),
   // created() {},
   methods: {
-    checkLogin() {
-      console.log("hey");
-      console.log(this.$data.user);
-      console.log(this.$data.password);
-    },
+    async connect() {
+      const user = await login(this.$data.user, this.$data.password);
+      if (user) {
+        router.push('/');
+      }
+    }
   },
 })
 export default class extends Vue {}

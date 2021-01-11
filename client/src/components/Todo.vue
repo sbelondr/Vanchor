@@ -75,7 +75,11 @@ import {
   deleteTodo,
 } from "@/models/Todo";
 
+import connect from '../functions/connection';
+
+
 import draggable from "vuedraggable";
+// import store from '@/store';
 
 export default {
   name: "Todo",
@@ -85,24 +89,6 @@ export default {
   setup() {
     const newTodo = ref("");
     const allTodo = ref([]);
-
-    // function saveOrder() {
-    //   let i = 0;
-    //   console.log("am here");
-    //   console.log(allTodo);
-    //   for (const line of allTodo.value) {
-    //     editTodoId(i, line.title);
-    //     ++i;
-    //   }
-    // }
-
-    // onBeforeUnmount(() => {
-    //   saveOrder();
-    // });
-
-    // function sortList() {
-    //   allTodo.value.sort((a, b) => a.done && !b.done);
-    // }
 
     function startTodo() {
       allTodo.value = getTodo();
@@ -187,9 +173,8 @@ export default {
     }
 
     onMounted(() => {
+      connect.checkConnection();
       startTodo();
-      //! beforeunload not working correctly 
-      // document.addEventListener('beforeunload', () => saveOrder());
     });
 
     return {

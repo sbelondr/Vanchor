@@ -16,7 +16,15 @@ const routes: Array<RouteConfig> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../components/Admin/cLogin.vue')
+    component: () => import('../components/Login/login.component.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('../components/Login/register.component.vue')
   },
 ]
 

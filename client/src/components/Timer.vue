@@ -75,9 +75,12 @@ import {
   onBeforeUnmount,
 } from "@vue/composition-api";
 
-import { getTimer, updateTimer } from "@/models/Timer";
+import { addTimer, getTimer, updateTimer } from "@/models/Timer";
 
 import Notif from "@/functions/notification";
+
+import connect from '../functions/connection';
+
 
 // ! bug stopwatch when it's default
 export default {
@@ -221,17 +224,28 @@ export default {
     const fetchData = async () => {
       const time = await getTimer();
 
-      return new Promise(() => {
-        data.id = time.id;
-        const pomSplit = time.pomodoro.split(":");
-        data.pomodoro[0] = parseInt(pomSplit[0], 10);
-        data.pomodoro[1] = parseInt(pomSplit[1], 10);
-        data.timer = time.timer;
-        selected.value = time.mode;
-      });
+      if (time.pomodoro) {
+        return new Promise(() => {
+          data.id = time.id;
+          const pomSplit = time.pomodoro.split(":");
+          data.pomodoro[0] = parseInt(pomSplit[0], 10);
+          data.pomodoro[1] = parseInt(pomSplit[1], 10);
+          data.timer = time.timer;
+          selected.value = time.mode;
+        });
+      } else {
+        await addTimer().then((value) => {
+          data.id = value.data.id;
+          data.pomodoro[0] = 600;
+          data.pomodoro[1] = 300;
+          data.timer = 120;
+          selected.value = 'stopwatch';
+        });
+      }
     };
 
     onMounted(async () => {
+      connect.checkConnection();
       await fetchData();
       Notif.getPermissionNotif();
       clickRadioButton(selected.value);
@@ -251,6 +265,7 @@ export default {
      */
     onBeforeUnmount(() => {
       updateTimer(
+        data.id,
         selected.value,
         getPomodoroFormat(data.pomodoro[0], data.pomodoro[1]),
         data.timer
