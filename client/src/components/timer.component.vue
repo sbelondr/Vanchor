@@ -68,6 +68,7 @@
 </template>
 
 <script>
+/* eslint-disable no-magic-numbers */
 import {
 	reactive,
 	ref,
@@ -75,17 +76,15 @@ import {
 	onBeforeUnmount,
 } from '@vue/composition-api';
 
-import { addTimer, getTimer, updateTimer } from '@/models/Timer';
+import { addTimer, getTimer, updateTimer } from '@/models/Services/Timer.service';
 
 import Notif from '@/functions/notification';
 
 import connect from '../functions/connection';
 
-
-// ! bug stopwatch when it's default
 export default {
 	components: {
-		SettingTimer: () => import('@/components/SettingTimer'),
+		SettingTimer: () => import('@/components/SettingTimer.component.vue'),
 	},
 	setup() {
 		const selected = ref('timer');
@@ -104,18 +103,18 @@ export default {
 		});
 
 		/**
-	 * edit format pomodoro to stock in the database
-	 * very bad (like my english)
-	 * @param a work time
-	 * @param b break time
-	 */
+	 	 * edit format pomodoro to stock in the database
+	 	 * very bad (like my english)
+	 	 * @param a work time
+	 	 * @param b break time
+	 	 */
 		function getPomodoroFormat(a, b) {
 			return a.toString() + ':' + b.toString();
 		}
 
 		/**
-	 * edit display when timer is over
-	 */
+	 	 * edit display when timer is over
+	 	 */
 		function clearTimer() {
 			data.isPlay = false;
 			data.nameBtnSuccess = 'Play';
@@ -123,9 +122,9 @@ export default {
 		}
 
 		/**
-	 * display format timer, check it's over and display notif
-	 * @param value time value (in sec)
-	 */
+	 	 * display format timer, check it's over and display notif
+	 	 * @param value time value (in sec)
+	 	 */
 		function calcFormat(value) {
 			let hours = 0;
 			let min = 0;
@@ -153,9 +152,9 @@ export default {
 		}
 
 		/**
-	 * edit display when use click in radio button
-	 * @param name name of radio button (user choice)
-	 */
+	 	 * edit display when use click in radio button
+	 	 * @param name name of radio button (user choice)
+	 	 */
 		function clickRadioButton(name) {
 			clearTimer();
 			if (name == 'stopwatch') {
@@ -168,9 +167,9 @@ export default {
 		}
 
 		/**
-	 * launch chrono and use calcFormat function to calculate format number
-	 * @param neg increment or decrement counter
-	 */
+	 	 * launch chrono and use calcFormat function to calculate format number
+	 	 * @param neg increment or decrement counter
+	 	 */
 		function launchChrono(neg) {
 			data.nameBtnSuccess = 'Pause';
 			data.isPlay = true;
@@ -197,9 +196,9 @@ export default {
 		}
 
 		/**
-	 * update time by component SettingTimer
-	 * @param value new data
-	 */
+		 * update time by component SettingTimer
+		 * @param value new data
+		 */
 		function timerUpdate(value) {
 			if (selected.value == 'pomodoro') {
 				data.pomodoro[0] = value;
@@ -210,17 +209,17 @@ export default {
 		}
 
 		/**
-	 * update pomodoro break time by component SettingTimer
-	 * @param value new data
-	 */
+		 * update pomodoro break time by component SettingTimer
+		 * @param value new data
+		 */
 		function pomodoroUpdate(value) {
 			data.pomodoro[1] = value;
 			clickRadioButton(selected.value);
 		}
 
 		/**
-	 * get data stock in the database
-	 */
+		 * get data stock in the database
+		 */
 		const fetchData = async () => {
 			const time = await getTimer();
 
@@ -261,8 +260,8 @@ export default {
 		}
 
 		/**
-	 * save data
-	 */
+		 * save data
+		 */
 		onBeforeUnmount(() => {
 			updateTimer(
 				data.id,

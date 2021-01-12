@@ -1,63 +1,64 @@
 <template>
 	<div class="Note">
-	<h3 class="mt-3">Notes</h3>
-	<div class="ml-5 mt-5">
-		<b-row>
-		<b-col sm="3">
-			<b-form-input
-			type="text"
-			v-model="title"
-			placeholder="Title note"
-			></b-form-input>
-		</b-col>
-		<b-col sm="2" class="text-left">
-			<b-button @click="handleAddNote">Launch Stackedit</b-button>
-		</b-col>
-		</b-row>
-	</div>
-	<div class="manageNote">
-		<div class="displayList">
-		<ul class="navig-todo" fluid="sm">
-			<b-list-group>
-			<li v-for="note in allNotes" :key="note.id" :class="{ note }">
-				<b-list-group-item>
-				<b-row>
-					<b-col
-					sm="6"
-					class="titleNote"
-					@click="displayThisContent(note)"
-					>
-					<h5>
-						{{ note.title }}
-					</h5>
-					</b-col>
-					<b-col sm="2" class="btnNote">
-					<b-button variant="outline-primary" @click="handleEditNote(note)"
-						>Edit</b-button
-					>
-					</b-col>
-					<b-col sm="2" class="btnNote">
-					<b-button variant="outline-danger" @click="handleDeleteNote(note)"
-						>Delete</b-button
-					>
-					</b-col>
-				</b-row>
-				</b-list-group-item>
-			</li>
-			</b-list-group>
-		</ul>
+		<h3 class="mt-3">Notes</h3>
+		<div class="ml-5 mt-5">
+			<b-row>
+				<b-col sm="3">
+					<b-form-input
+						type="text"
+						v-model="title"
+						placeholder="Title note"
+					></b-form-input>
+				</b-col>
+				<b-col sm="2" class="text-left">
+					<b-button @click="handleAddNote">Launch Stackedit</b-button>
+				</b-col>
+			</b-row>
 		</div>
-		<div class="text-left displayMarkdown" v-html="displayMarkdownContent" />
-	</div>
+		<div class="manageNote">
+			<div class="displayList">
+				<ul class="navig-todo" fluid="sm">
+					<b-list-group>
+						<li v-for="note in allNotes" :key="note.id" :class="{ note }">
+							<b-list-group-item>
+								<b-row>
+									<b-col
+										sm="6"
+										class="titleNote"
+										@click="displayThisContent(note)"
+									>
+										<h5>
+											{{ note.title }}
+										</h5>
+									</b-col>
+									<b-col sm="2" class="btnNote">
+										<b-button
+											variant="outline-primary"
+											@click="handleEditNote(note)"
+											>Edit</b-button
+										>
+									</b-col>
+									<b-col sm="2" class="btnNote">
+										<b-button
+											variant="outline-danger"
+											@click="handleDeleteNote(note)"
+											>Delete</b-button
+										>
+									</b-col>
+								</b-row>
+							</b-list-group-item>
+						</li>
+					</b-list-group>
+				</ul>
+			</div>
+			<div class="text-left displayMarkdown" v-html="displayMarkdownContent" />
+		</div>
 	</div>
 </template>
 
 <script>
 import marked from 'marked';
-import {
-	ref,
-	onMounted,
-} from '@vue/composition-api';
+import { ref, onMounted } from '@vue/composition-api';
 import Stackedit from 'stackedit-js';
 import { addNote, editNote, deleteNote, getNote } from '@/models/Services/Note.service';
 

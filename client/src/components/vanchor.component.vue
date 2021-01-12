@@ -1,8 +1,8 @@
 <template>
-<div class="vanchor">
-<h2>Vanchor</h2>
-<p>Wait rework</p>
-<!-- <div class="search">
+	<div class="vanchor">
+		<h2>Vanchor</h2>
+		<p>Wait rework</p>
+		<!-- <div class="search">
 	<b-input-group>
 	<b-input-group-prepend is-text>
 		<b-form-checkbox switch class="mr-n2">
@@ -21,14 +21,11 @@
 	</b-input-group-append>
 	</b-input-group>
 </div> -->
-</div>
+	</div>
 </template>
 
 <script>
-import {
-	reactive,
-	onMounted
-} from '@vue/composition-api';
+import { reactive, onMounted } from '@vue/composition-api';
 
 import { Article } from '@/models/Article';
 
@@ -74,9 +71,6 @@ export default {
 		},
 	},
 };
-
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

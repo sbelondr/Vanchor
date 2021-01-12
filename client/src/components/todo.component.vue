@@ -1,80 +1,77 @@
 <template>
-<div class="Todo">
-	<h3>To Do</h3>
-	<form class="mt-3" @submit.prevent="addNewTodo">
-	<b-row class="ml-5">
-		<b-col sm="3" class="text-left">
-		<b-form-input
-			type="text"
-			v-model="newTodo"
-			name="newTodo"
-			placeholder="New todo"
-		></b-form-input>
-		</b-col>
-		<b-col sm="2" class="text-left">
-		<b-button variant="outline-primary" @click="addNewTodo"
-			>Add new todo</b-button
-		>
-		</b-col>
-	</b-row>
-	</form>
-
-	<ul class="display-todo">
-	<b-list-group class="w-50 ml-2 mr-5 mt-3 navig-todo">
-		<draggable
-			v-model="allTodo"
-			group="people"
-			@start="drag = true"
-			@end="drag = false"
-		>
-		<li v-for="(todo, index) in allTodo" :key="todo.id" :class="{ todo }">
-			<b-list-group-item>
-			<b-row>
-				<b-col sm="10" class="text-left">
-				<h5 :class="{ done: todo.done }" @click="toggleDone(todo)">
-					{{ todo.title }}
-				</h5>
+	<div class="Todo">
+		<h3>To Do</h3>
+		<form class="mt-3" @submit.prevent="addNewTodo">
+			<b-row class="ml-5">
+				<b-col sm="3" class="text-left">
+					<b-form-input
+						type="text"
+						v-model="newTodo"
+						name="newTodo"
+						placeholder="New todo"
+					></b-form-input>
 				</b-col>
-				<b-col sm="2">
-				<b-button variant="danger" @click="removeTodo(index)"
-					>Remove</b-button
-				>
+				<b-col sm="2" class="text-left">
+					<b-button variant="outline-primary" @click="addNewTodo"
+						>Add new todo</b-button
+					>
 				</b-col>
 			</b-row>
-			</b-list-group-item>
-		</li>
-		</draggable>
-	</b-list-group>
-	</ul>
+		</form>
 
-	<b-row class="mt-4">
-	<b-col sm="4">
-		<b-button variant="success" @click="markAllDone">Mark all done</b-button
-		>
-	</b-col>
-	<b-col sm="4">
-		<b-button variant="danger" @click="removeAllDone">Remove all done</b-button
-		>
-	</b-col>
-	<b-col sm="4">
-		<b-button variant="danger" @click="removeAll">Remove all</b-button>
-	</b-col>
-	</b-row>
-</div>
+		<ul class="display-todo">
+			<b-list-group class="w-50 ml-2 mr-5 mt-3 navig-todo">
+				<draggable
+					v-model="allTodo"
+					group="people"
+					@start="drag = true"
+					@end="drag = false"
+				>
+					<li v-for="(todo, index) in allTodo" :key="todo.id" :class="{ todo }">
+						<b-list-group-item>
+							<b-row>
+								<b-col sm="10" class="text-left">
+									<h5
+										:class="{ done: todo.done }"
+										@click="toggleDone(todo)"
+									>
+										{{ todo.title }}
+									</h5>
+								</b-col>
+								<b-col sm="2">
+									<b-button variant="danger" @click="removeTodo(index)"
+										>Remove</b-button
+									>
+								</b-col>
+							</b-row>
+						</b-list-group-item>
+					</li>
+				</draggable>
+			</b-list-group>
+		</ul>
+
+		<b-row class="mt-4">
+			<b-col sm="4">
+				<b-button variant="success" @click="markAllDone">Mark all done</b-button>
+			</b-col>
+			<b-col sm="4">
+				<b-button variant="danger" @click="removeAllDone"
+					>Remove all done</b-button
+				>
+			</b-col>
+			<b-col sm="4">
+				<b-button variant="danger" @click="removeAll">Remove all</b-button>
+			</b-col>
+		</b-row>
+	</div>
 </template>
 
 <script>
 import { ref, onMounted } from '@vue/composition-api';
 
-import {
-	getTodo,
-	addTodo,
-	editTodo,
-	deleteTodo,
-} from '@/models/Todo';
+import { getTodo, addTodo, editTodo, deleteTodo } from '@/models/Services/Todo.service';
 
 import connect from '../functions/connection';
-
 
 import draggable from 'vuedraggable';
 // import store from '@/store';

@@ -3,7 +3,7 @@ import store from '@/store';
 import { User } from '../User';
 
 const axios = require('axios').default;
-const url = 'http://localhost:3000/auth/';
+const url = process.env.VUE_APP_MONGO_URI + '/auth/';
 const statusCode = 200;
 
 export async function login(mail: string, password: string) {

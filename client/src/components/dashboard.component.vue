@@ -1,14 +1,12 @@
 <template>
-<div class="Dashboard">
-  <h3>Dashboard</h3>
-  <button @click="test">test</button>
-</div>
+	<div class="Dashboard">
+		<h3>Dashboard</h3>
+		<button @click="test">test</button>
+	</div>
 </template>
 
 <script>
-import {
-	onMounted
-} from '@vue/composition-api';
+import { onMounted } from '@vue/composition-api';
 
 import connect from '../functions/connection';
 
@@ -20,12 +18,12 @@ export default {
 		});
 
 		function test() {
-			window.localStorage.setItem('refresh_token', 'ddddd')
+			window.localStorage.setItem('refresh_token', 'ddddd');
 		}
 
 		return {
-			test
-		}
+			test,
+		};
 	},
 };
 </script>

@@ -5,7 +5,7 @@ import store from "@/store";
 import { INote } from '../Note';
 
 const axios = require("axios").default;
-const url = "http://localhost:3000/api/note/";
+const url = process.env.VUE_APP_MONGO_URI + '/api/note/';
 const config = {
 	headers: {
 		Authorization: `Bearer ${store.getters.getUser.getAccessToken()}`
