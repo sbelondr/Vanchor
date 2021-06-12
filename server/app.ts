@@ -24,7 +24,7 @@ app.use('/auth', AuthRoute);
 app.use('/api', ApiRoute);
 
 app.get('/', verifyAccessToken, async (req, res, next) => {
-    res.end('Hi, in morgan auth');
+    res.end('Hi, in Vanchor api');
 })
 
 app.use(async (req, res, next) => {
@@ -45,3 +45,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`))
+
+module.exports = app;
