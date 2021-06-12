@@ -1,7 +1,12 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema, model, Document } from 'mongoose';
 
-const NoteSchema = new Schema({
+interface INote extends Document {
+	idUser: string;
+	title: string;
+	content: string;
+}
+
+const NoteSchema = new Schema<INote>({
     idUser: {
         type: String,
         required: true
@@ -17,6 +22,6 @@ const NoteSchema = new Schema({
     }
 });
 
-const Note = mongoose.model('note', NoteSchema);
+const NoteModel = model<INote>('note', NoteSchema);
 
-module.exports = Note;
+module.exports = NoteModel;

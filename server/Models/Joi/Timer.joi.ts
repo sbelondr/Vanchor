@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const timerSchema = Joi.object({
     idUser: Joi.string().required(),

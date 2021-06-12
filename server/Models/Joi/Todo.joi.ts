@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const todoSchema = Joi.object({
     idUser: Joi.string().required(),

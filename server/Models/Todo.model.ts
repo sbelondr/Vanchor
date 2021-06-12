@@ -1,8 +1,12 @@
-const { number, string } = require('joi');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema, model, Document } from 'mongoose';
 
-const TodoSchema = new Schema({
+interface ITodo extends Document {
+	idUser: string;
+	title: string;
+	check: number;
+}
+
+const TodoSchema = new Schema<ITodo>({
     idUser: {
         type: String,
         required: true
@@ -18,6 +22,8 @@ const TodoSchema = new Schema({
     }
 });
 
-const Todo = mongoose.model('todo', TodoSchema);
+const TodoModel = model<ITodo>('todo', TodoSchema);
 
-module.exports = Todo;
+// const Todo = mongoose.model('todo', TodoSchema);
+
+module.exports = TodoModel;

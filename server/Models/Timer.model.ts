@@ -1,7 +1,13 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema, model, Document } from 'mongoose';
 
-const TimerSchema = new Schema({
+interface ITimer extends Document {
+	idUser: string;
+	mode: string;
+	pomodoro: string;
+	timer: number;
+}
+
+const TimerSchema = new Schema<ITimer>({
     idUser: {
         type: String,
         required: true
@@ -20,6 +26,6 @@ const TimerSchema = new Schema({
     }
 });
 
-const Timer = mongoose.model('timer', TimerSchema);
+const TimerModel = model<ITimer>('timer', TimerSchema);
 
-module.exports = Timer;
+module.exports = TimerModel;

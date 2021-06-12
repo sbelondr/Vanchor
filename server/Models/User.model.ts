@@ -1,8 +1,19 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const UserSchema = new Schema({
+import { Schema, model } from 'mongoose';
+
+// const Schema = mongoose.Schema;
+
+interface IUser extends mongoose.Document {
+	email: string;
+	lastname: string;
+	firstname: string;
+	password: string;
+	isValidPassword: (password: string) => Promise<boolean>;
+}
+
+const UserSchema = new Schema<IUser>({
     email: {
         type: String,
         required: true,
@@ -44,6 +55,8 @@ UserSchema.methods.isValidPassword = async function (password) {
     }
 }
 
-const User = mongoose.model('user', UserSchema);
+export const UserModel = model<IUser>('user', UserSchema);
 
-module.exports = User;
+// const User = mongoose.model('user', UserSchema);
+
+// module.exports = UserModel; //User;
