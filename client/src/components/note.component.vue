@@ -1,20 +1,22 @@
 <template>
 	<div class="Note">
 		<h3 class="mt-3">Notes</h3>
-		<div class="ml-5 mt-5">
-			<b-row>
-				<b-col sm="3">
-					<b-form-input
-						type="text"
-						v-model="title"
-						placeholder="Title note"
-					></b-form-input>
-				</b-col>
-				<b-col sm="2" class="text-left">
-					<b-button @click="handleAddNote">Launch Stackedit</b-button>
-				</b-col>
-			</b-row>
-		</div>
+		<form @submit.prevent="handleAddNote">
+			<div class="ml-5 mt-5">
+				<b-row>
+					<b-col sm="3">
+						<b-form-input
+							type="text"
+							v-model="title"
+							placeholder="Title note"
+						></b-form-input>
+					</b-col>
+					<b-col sm="2" class="text-left">
+						<b-button @click="handleAddNote">Launch Stackedit</b-button>
+					</b-col>
+				</b-row>
+			</div>
+		</form>
 		<div class="manageNote">
 			<div class="displayList">
 				<ul class="navig-todo" fluid="sm">

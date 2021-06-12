@@ -19,6 +19,12 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.9",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.0.0"
   }
 }

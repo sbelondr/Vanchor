@@ -26,8 +26,8 @@ import { login } from '../../models/Services/User.service';
 @Component({
 	name: 'Login',
 	data: () => ({
-		user: '',
-		password: '',
+		user: 'sam@localhost.fr',
+		password: 'qwerty',
 	}),
 	// created() {},
 	methods: {

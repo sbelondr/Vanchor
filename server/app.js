@@ -9,10 +9,12 @@ const cors = require('cors');
 
 // Settings
 require('./config/mongo.config');
+require('./config/redis.config');
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) ?? 3000;
 const AuthRoute = require('./Routes/Auth.route');
 const ApiRoute = require('./Routes/Api.route');
+// const client = require('./config/redis.config');
 
 // app
 app.use(cors());

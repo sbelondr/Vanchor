@@ -87,7 +87,6 @@ export default {
 
 		function startTodo() {
 			allTodo.value = getTodo();
-			// sortList();
 		}
 
 		function searchDoublon(value) {

@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
+const client = require('./redis.config');
 
 module.exports = {
     signAccessToken: (userId) => {
@@ -49,20 +50,38 @@ module.exports = {
             JWT.sign(payload, secret, options, (err, token) => {
                 if (err) {
                     return reject(createError.InternalServerError());
-                }
+				}
+				client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
+					if (err) {
+						console.error(err.message);
+						return reject(createError.InternalServerError());
+					}
+					return resolve(token);
+				});
                 return resolve(token);
             });
         });
     },
     verifyRefreshToken: (refreshToken) => {
         return new Promise((resolve, reject) => {
-            const test = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDk3NTA5NjEsImV4cCI6MTY0MTMwODU2MSwiYXVkIjoiNWZmMTAwM2FiMTRhNWUyOWY4ODEwOWFhIiwiaXNzIjoibG9jYWxob3N0In0.MaAk8LFXaWyfkEHp5c-aX5YAbmuspdcq5itmKcrezyE"
             JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-                if (err || refreshToken == test) {
+                if (err) {
                     return reject(createError.Unauthorized());
                 }
-                const userId = payload.aud;
-                resolve(userId);
+				const userId = payload.aud;
+				client.GET(userId, (err, result) => {
+					if (err) {
+						console.error(err.message);
+						return reject(createError.InternalServerError());
+					}
+					if (refreshToken === result) {
+						resolve(userId);
+						return;
+					} else {
+						console.log('ddd');
+					}
+					return reject(createError.Unauthorized());
+				});
             })
         });
     }

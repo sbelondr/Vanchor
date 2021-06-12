@@ -6,11 +6,16 @@ const axios = require('axios').default;
 const url = process.env.VUE_APP_MONGO_URI + '/auth/';
 const statusCode = 200;
 
+const config = {
+	//eslint-disable-next-line
+	headers: { 'Access-Control-Allow-Origins': "*" },
+}
+
 export async function login(mail: string, password: string) {
-	const result = await axios.post(url + 'login', {
+	const result = await axios.post('http://localhost:3000/auth/login', {
 		email: mail,
 		password: password
-	});
+	}, config);
 	const user = new User(result.data.id, result.data.lastname, result.data.firstname, result.data.email, result.data.accessToken, result.data.refreshToken);
 	window.localStorage.setItem('access_token', user.getAccessToken());
 	window.localStorage.setItem('refresh_token', user.getRefreshToken());
@@ -26,8 +31,19 @@ export async function logout() {
 		window.localStorage.removeItem('refresh_token');
 		return result;
 	} else {
-		return ({result: 'Error'});
+		return ({ result: 'Error' });
 	}
+}
+
+export async function register(email: string, lastname: string, firstname: string, password: string) {
+	const result = await axios.post('http://localhost:3000/auth/register', {
+		email,
+		lastname,
+		firstname,
+		password
+	}, config);
+	console.log(result);
+	
 }
 
 export async function refreshToken() {
@@ -48,7 +64,7 @@ export async function refreshToken() {
 		}
 	} else {
 		console.log('log out');
-        
+
 		// logout();
 	}
 }
