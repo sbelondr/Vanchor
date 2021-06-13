@@ -17,7 +17,7 @@ export class AuthRoutes extends RouteConfig {
 	configureRoutes() {
 		this.app.route('/auth/register').post([ft_register]);
 		this.app.route('/auth/login').post([ft_login]);
-		this.app.route('/auth/refresh-token').post([verifyAccessToken, ft_refresh_token]);
+		this.app.route('/auth/refresh-token').post([ft_refresh_token]);
 		this.app.route('/auth/logout/:refreshToken').delete([ft_logout]);
 		return this.app;
 	}
