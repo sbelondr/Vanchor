@@ -23,4 +23,3 @@ const TodoSchema = new Schema<ITodo>({
 });
 
 export const TodoModel = model<ITodo>('todo', TodoSchema);
-

@@ -1,4 +1,4 @@
-import express, { Application } from "express"
+import { Application } from "express"
 
 // https://cloudnweb.dev/2021/05/express-typescript-basic-auth/
 

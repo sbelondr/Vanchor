@@ -1,10 +1,9 @@
 // import
 require('dotenv').config();
-import express, { NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import createError from 'http-errors';
-// import { verifyAccessToken } from './config/jwt.config';
-const cors = require('cors');
+import cors from 'cors';
 
 // Settings
 require('./config/mongo.config');
@@ -28,18 +27,18 @@ app.use(express.json());
 routes.push(new AuthRoutes(app));
 routes.push(new ApiRoutes(app));
 
-// app.get('/', verifyAccessToken, async (req, res, next) => {
-//     res.end('Hi, in Vanchor api');
-// })
+app.get('/', async (req, res, next) => {
+    res.end('Hi, in the Vanchor api');
+})
 
-app.use(async (req, res, next) => {
+app.use(async (req: Request, res: Response, next: NextFunction) => {
     next(new createError.NotFound());
 });
 
 /*
  * manage error
  */
-app.use((err: any, req: express.Request, res: express.Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500);
     res.send({
         error: {

@@ -1,11 +1,7 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { Schema, model, Document } from 'mongoose';
 
-import { Schema, model } from 'mongoose';
-
-// const Schema = mongoose.Schema;
-
-interface IUser extends mongoose.Document {
+interface IUser extends Document {
 	email: string;
 	lastname: string;
 	firstname: string;
