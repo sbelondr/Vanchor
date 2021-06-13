@@ -82,8 +82,6 @@ export async function ft_login(req: express.Request, res: express.Response, next
 // }
 
 export async function ft_logout(req: express.Request, res: express.Response, next: express.NextFunction) {
-	console.log('am here');
-	
 	try {
 		const { refreshToken } = req.params;
 
@@ -97,13 +95,11 @@ export async function ft_logout(req: express.Request, res: express.Response, nex
 				console.error(err.message);
 				throw new createError.InternalServerError();
 			}
-			console.log(val);
+			console.log(`val: ${val}`);
 			res.status(200).send({ result: "1" });
 
-		})
+		});
 	} catch (error) {
-		console.log('ici');
-		
 		next(error);
 	}
 }

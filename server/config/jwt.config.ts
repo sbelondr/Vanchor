@@ -69,11 +69,11 @@ export function signRefreshToken(userId: string) {
 
 export function verifyRefreshToken(refreshToken: string) {
 	return new Promise((resolve, reject) => {
-		JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET ?? '', (err, payload) => {
+		JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET ?? '', (err, payload: any) => {
 			if (err) {
 				return reject(new createError.Unauthorized());
 			}
-			const userId = 'ss'//payload?.audience;
+			const userId = payload.aud;
 			client.GET(userId, (err, result) => {
 				if (err) {
 					console.error(err.message);
@@ -83,7 +83,7 @@ export function verifyRefreshToken(refreshToken: string) {
 					resolve(userId);
 					return;
 				} else {
-					console.log('ddd');
+					console.error('refreshToken not found');
 				}
 				return reject(new createError.Unauthorized());
 			});
