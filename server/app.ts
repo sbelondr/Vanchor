@@ -1,10 +1,9 @@
 // import
-
 require('dotenv').config();
 import express, { NextFunction } from 'express';
 import morgan from 'morgan';
 import createError from 'http-errors';
-import { verifyAccessToken } from './config/jwt.config';
+// import { verifyAccessToken } from './config/jwt.config';
 const cors = require('cors');
 
 // Settings
@@ -13,13 +12,12 @@ require('./config/redis.config');
 const app = express();
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
 
+// import routes
 import { AuthRoutes } from './Routes/Auth.route';
-// import ApiRoute from './Routes/Api.route';
-
+import { ApiRoutes } from './Routes/Api.route';
 import { RouteConfig } from './config/route.config';
-const routes: Array<RouteConfig> = [];
 
-//// const client = require('./config/redis.config');
+const routes: Array<RouteConfig> = [];
 
 // app
 app.use(cors());
@@ -27,11 +25,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // route
-
 routes.push(new AuthRoutes(app));
-
-// app.use('/auth', AuthRoutes);
-// app.use('/api', ApiRoute);
+routes.push(new ApiRoutes(app));
 
 // app.get('/', verifyAccessToken, async (req, res, next) => {
 //     res.end('Hi, in Vanchor api');
@@ -54,6 +49,4 @@ app.use((err: any, req: express.Request, res: express.Response, next: NextFuncti
     });
 });
 
-app.listen(PORT, () => console.log(`Server running on ${PORT}`))
-
-module.exports = app;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));

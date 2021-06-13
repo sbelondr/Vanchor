@@ -56,7 +56,3 @@ UserSchema.methods.isValidPassword = async function (password) {
 }
 
 export const UserModel = model<IUser>('user', UserSchema);
-
-// const User = mongoose.model('user', UserSchema);
-
-// module.exports = UserModel; //User;

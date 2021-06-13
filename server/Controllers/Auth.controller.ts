@@ -3,11 +3,10 @@ import { authSchema, userSchema } from '../Models/Joi/User.joi';
 import createError from 'http-errors';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../config/jwt.config';
 import { client } from '../config/redis.config';
-import { NextFunction } from 'express';
 
-import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-export async function ft_register(req: express.Request, res: express.Response, next: NextFunction) {
+export async function ft_register(req: Request, res: Response, next: NextFunction) {
 	try {
 		const result = await userSchema.validateAsync(req.body);
 		const doesExit = await UserModel.findOne({ email: result.email });
@@ -17,16 +16,15 @@ export async function ft_register(req: express.Request, res: express.Response, n
 		const savedUser = await newUser.save();
 		const accessToken = await signAccessToken(savedUser.id);
 		const refreshToken = await signRefreshToken(savedUser.id);
-		const data = JSON.stringify({ statusCode: 200, accessToken: accessToken, refreshToken: refreshToken })
+		const data = JSON.stringify({ accessToken: accessToken, refreshToken: refreshToken })
 		res.status(200).send(data);
-		// res.json().then(data => data);
 	} catch (error) {
 		if (error.isJoi === true) error.status = 422;
 		next(error);
 	}
 }
 
-export async function ft_login(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function ft_login(req: Request, res: Response, next: NextFunction) {
 	try {
 		const result = await authSchema.validateAsync(req.body);
 		const user = await UserModel.findOne({ email: result.email });
@@ -55,33 +53,37 @@ export async function ft_login(req: express.Request, res: express.Response, next
 	}
 }
 
-// export async function ft_refresh_token(req, res, next) {
-// 	try {
-// 		const { refreshToken } = req.body;
+export async function ft_refresh_token(req: Request, res: Response, next: NextFunction) {
+	try {
+		const { refreshToken } = req.body;
 
-// 		if (!refreshToken) {
-// 			throw new createError.BadRequest();
-// 		}
-// 		const userId = await verifyRefreshToken(refreshToken);
+		if (!refreshToken) {
+			throw new createError.BadRequest();
+		}
+		const userId = await verifyRefreshToken(refreshToken);
+		const id: string = typeof userId == 'string' ? userId : '';
 
-// 		const user = await UserModel.findOne({ _id: userId });
-// 		const accessToken = await signAccessToken(userId);
-// 		const newRefreshToken = await signRefreshToken(userId);
-// 		res.send({
-// 			id: user._id,
-// 			lastname: user.lastname,
-// 			firstname: user.firstname,
-// 			email: user.email,
-// 			accessToken: accessToken,
-// 			refreshToken: newRefreshToken
-// 		});
-// 		// res.send({accessToken: accessToken, refreshToken: newRefreshToken});
-// 	} catch (error) {
-// 		next(error);
-// 	}
-// }
+		const user = await UserModel.findOne({ _id: id });
+		if (user) {
+			const accessToken = await signAccessToken(id);
+			const newRefreshToken = await signRefreshToken(id);
+			res.send({
+				id: user._id,
+				lastname: user.lastname,
+				firstname: user.firstname,
+				email: user.email,
+				accessToken: accessToken,
+				refreshToken: newRefreshToken
+			});
+		} else {
+			throw new createError.Unauthorized('token not exist');
+		}
+	} catch (error) {
+		next(error);
+	}
+}
 
-export async function ft_logout(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function ft_logout(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { refreshToken } = req.params;
 

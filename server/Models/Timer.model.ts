@@ -26,6 +26,4 @@ const TimerSchema = new Schema<ITimer>({
     }
 });
 
-const TimerModel = model<ITimer>('timer', TimerSchema);
-
-module.exports = TimerModel;
+export const TimerModel = model<ITimer>('timer', TimerSchema);

@@ -2,7 +2,7 @@ import JWT, { VerifyOptions } from 'jsonwebtoken';
 import createError from 'http-errors';
 import { client } from './redis.config';
 
-import express, { NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 export function signAccessToken(userId: string) {
 	return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ export function signAccessToken(userId: string) {
 }
 
 
-export function verifyAccessToken(req: express.Request, res: express.Response, next: NextFunction) {
+export function verifyAccessToken(req: Request, res: Response, next: NextFunction) {
 	if (!req.headers['authorization']) {
 		return next(new createError.Unauthorized());
 	}

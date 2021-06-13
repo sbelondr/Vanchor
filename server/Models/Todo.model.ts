@@ -22,8 +22,5 @@ const TodoSchema = new Schema<ITodo>({
     }
 });
 
-const TodoModel = model<ITodo>('todo', TodoSchema);
+export const TodoModel = model<ITodo>('todo', TodoSchema);
 
-// const Todo = mongoose.model('todo', TodoSchema);
-
-module.exports = TodoModel;

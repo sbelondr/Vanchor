@@ -22,6 +22,4 @@ const NoteSchema = new Schema<INote>({
     }
 });
 
-const NoteModel = model<INote>('note', NoteSchema);
-
-module.exports = NoteModel;
+export const NoteModel = model<INote>('note', NoteSchema);

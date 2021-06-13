@@ -11,8 +11,3 @@ export const userSchema = Joi.object({
     firstname: Joi.string().required(),
     password: Joi.string().min(4).required(),
 });
-
-// module.exports = {
-//     authSchema,
-//     userSchema
-// }
