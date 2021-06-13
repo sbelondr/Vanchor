@@ -7,12 +7,10 @@ import { Request, Response, NextFunction } from 'express';
 export async function get_note(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { id } = req.params;
-		console.log(`id: ${id}`);
-		
+
 		if (!id) {
 			throw new createError.BadRequest();
 		}
-		console.log('je suis la');
 		const result = await NoteModel.find({ idUser: id });
 		res.send(result);
 	} catch (error) {

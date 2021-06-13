@@ -97,7 +97,6 @@ export async function ft_logout(req: Request, res: Response, next: NextFunction)
 				console.error(err.message);
 				throw new createError.InternalServerError();
 			}
-			console.log(`val: ${val}`);
 			res.status(200).send({ result: "1" });
 
 		});
